@@ -1,0 +1,3335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppStore - Discover Apps & Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* All existing CSS styles remain the same until the new additions below */
+            /* Disable text selection */
+    * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Disable drag of images and links */
+    img, a {
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+        user-drag: none;
+        pointer-events: auto;
+    }
+
+    /* Disable pointer events for iframes or embeds */
+    iframe, embed, object, video {
+        pointer-events: none;
+    }
+
+    /* Prevent right-click via pointer-events */
+    body {
+        cursor: default;
+    }
+    /* Prevent text selection */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Disable image dragging */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+        /* NEW: Loading States and Performance Improvements */
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--background-light) 25%, #e8e8e8 50%, var(--background-light) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .modal-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .modal-loading .spinner {
+            margin: 0 auto 20px;
+        }
+        
+        .modal-loading h3 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-spin 0.8s linear infinite;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes button-spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .btn-disabled {
+            opacity: 0.7;
+            cursor: not-allowed !important;
+        }
+        
+        .quick-feedback {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 4000;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2s forwards;
+            display: none;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        /* Prevent body scroll when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+        
+        /* Skeleton styles for app modal */
+        .skeleton-image {
+            width: 100%;
+            height: 220px;
+            background: var(--background-light);
+        }
+        
+        .skeleton-text {
+            height: 20px;
+            background: var(--background-light);
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .skeleton-text.short {
+            width: 60%;
+        }
+        
+        .skeleton-text.medium {
+            width: 80%;
+        }
+        
+        /* Optimize modal animations */
+        .modal-content {
+            animation: modalSlideUp 0.25s ease-out;
+        }
+        
+        @keyframes modalSlideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Add to existing styles */
+        .interaction-btn.processing {
+            opacity: 0.7;
+            cursor: wait !important;
+        }
+        
+        .review-form.processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        /* All previous CSS styles remain unchanged below this point */
+        :root {
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --background-light: #F2F2F7;
+            --card-background: #FFFFFF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #8E8E93;
+            --border-light: #C7C7CC;
+            --rating-yellow: #FF9500;
+            --download-green: #34C759;
+            --like-red: #FF3B30;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --gradient-primary: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+            --golden: #FFD700;
+            --share-blue: #4285F4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* MOBILE FIRST STYLES */
+        
+        /* Header - Mobile Optimized */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            color: var(--text-primary);
+            padding: 12px 0;
+            box-shadow: 0 1px 6px var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            height: 35px;
+            width:30px;
+            background:url("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_Play_2022_icon.svg/1024px-Google_Play_2022_icon.svg.png?20220726170516");
+            background-size: 100% 100%;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .logo i {
+            font-size: 24px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span {
+            display: none; /* Hide text on mobile */
+        }
+
+        .search-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 40px 12px 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            background: var(--background-light);
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .search-container .clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: none;
+            font-size: 14px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid var(--primary-blue);
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            border-color:#fdbd01;
+        }
+
+        /* App Store Tabs - Mobile Optimized */
+        .app-tabs {
+            display: flex;
+            background: white;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            border-top: 1px solid var(--border-light);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px var(--shadow-light);
+            height: 60px;
+        }
+
+        .app-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .app-tabs .container {
+            display: flex;
+            padding: 0;
+            min-width: 100%;
+        }
+
+        .tab {
+            padding: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            color: var(--primary-blue);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 16px;
+            right: 16px;
+            height: 3px;
+            background: var(--primary-blue);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Today Highlight - Mobile Optimized */
+        .today-highlight {
+            background:url("https://t3.ftcdn.net/jpg/05/24/65/66/360_F_524656614_9R1msWLiXVIHnJ4DRzz0hYxKu2mvKQo0.webp");
+            background-size: 100% 100%;
+            color: white;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .today-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap:5px;
+            text-align: center;
+        }
+
+        .today-app-icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(22, 11, 100, 0.2);
+            border: 4px solid transparent;
+            outline:1px solid rgba(290,180,0,0.4);
+            background-size: 100% 100%;
+            background:url("https://img1.picmix.com/output/stamp/normal/0/2/8/3/2523820_5a586.gif");
+        }
+
+        .today-text h2 {
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0.9;
+            margin-bottom: 0px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .today-text h1 {
+            font-size: 24px;
+    font-weight: 900;
+    font-family: serif;
+    background: linear-gradient(0deg, #fdbd01, #fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+     -webkit-text-stroke:.5px #fdbd01;
+     text-transform: uppercase;
+        }
+
+        .today-text p {
+            font-size: 10px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        /* Category Filter - Mobile Optimized */
+        .category-filter {
+            background: transparent;
+            padding: 16px 0;
+            margin-bottom: 24px;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .category-buttons::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-btn {
+            padding: 10px 16px;
+            border: none;
+            background: var(--card-background);
+            border-radius: 50px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-primary);
+            box-shadow: 0 2px 6px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .category-btn i {
+            font-size: 13px;
+        }
+
+        .category-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+        }
+
+        /* App Grid - Mobile Optimized */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3px 0 1px;
+        }
+
+        .section-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .see-all {
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 65px;
+            margin-top: 5px;
+        }
+
+        .app-card {
+            background: var(--card-background);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .app-image {
+            width: 100%;
+            height: 150px;
+            object-fit:fill;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .app-info {
+            padding: 20px;
+            position: relative;
+        }
+
+        .app-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background:white;
+            object-fit: cover;
+            position: absolute;
+            top: -50px;
+            left: 20px;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+        }
+
+        .app-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin-top: 5px;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .app-get-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .app-developer {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .app-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding-top: 5px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .rating {
+            font-weight: 900;
+    font-family: serif;
+    background: linear-gradient(0deg, #fdbd01, #fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+     -webkit-text-stroke:.5px #fdbd01;
+     text-transform: uppercase;
+            gap: 4px;
+        }
+
+        .download-count {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--background-light);
+            color: var(--primary-blue);
+            border-bottom-right-radius:15px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 10px;
+            font-weight: 900;
+            margin: 2px;
+        }
+
+        /* Professional Modal System */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-content {
+            background: var(--card-background);
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .close-modal {
+            position: fixed;
+            right: 16px;
+            top: 16px;
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            border: none;
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .modal-header {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header img {
+            width: 100%;
+            height: 100%;
+            object-fit:fill;
+        }
+
+        .modal-app-logo {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 22px;
+            position:absolute;
+            object-fit: fill;
+            bottom: 5px;
+            left: 5px;
+            border: 4px solid white;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            background:white;
+        }
+
+        .modal-body {
+            padding:10px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-developer {
+            color: var(--primary-blue);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+       .modal-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background:white;
+    padding:0;
+    width: 100%;
+
+    /* SCROLL BEHAVIOR */
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar visually but keep functionality */
+.modal-stats::-webkit-scrollbar {
+    height: 0;
+}
+
+.stat-item {
+    flex: 0 0 auto;          /* IMPORTANT for horizontal scrolling */
+    min-width: 110px;        /* Matches Play Store spacing */
+    text-align: center;
+    border-right: 1px solid rgba(0,0,0,0.15);
+    padding: 0 6px;
+}
+
+.stat-item.no-border {
+    border-right: none;
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color:black;
+    gap: 4px;
+}
+
+.star-icon {
+    font-size: 14px;
+    color:rgba(11,12,97,0.8);
+}
+
+.download-icon {
+    font-size: 20px;
+    color:black;
+    border:2px solid ;
+    padding:2px;
+    border-radius: 3px;
+}
+
+.stat-bottom {
+    font-size: 12px;
+    color: #b0b0b0;
+    font-weight: 500;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+        .download-btn {
+            background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjrzXWlJoSkI8I_mEDO5rpKez1kydzqUpjsDqKkPW-bvgLGTIY154DX-96VEN8zuOo_DUcTQztVKPzxyDZkDxSiV6Ahts9eu4L7yDpA_7p3Z6X7qJLGAREQMckePMfKj7jGPacMPiIhm0VkLE8kFuH4Mg5NCBc5NvQKl_KqW4qETcOAaoG1YbgFVzNqKJw/s16000/1000108763.png");
+            background-size: 100% 100%;
+            color: black;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            width: 100%;
+            justify-content: center;
+        }
+        .download-btn:active{
+            transform:scale(0.95);
+        }
+
+        .preview-images {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+            padding: 8px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .preview-images::-webkit-scrollbar {
+            display: none;
+        }
+
+        .preview-image {
+            width: 140px;
+            height: 280px;
+            object-fit: fill;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .reviews-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .review-form {
+            background: var(--background-light);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .review-form h4 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .review-form textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            margin: 12px 0;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 14px;
+            min-height: 100px;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0;
+        }
+
+        .rating-input i {
+            color: var(--border-light);
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-input i.active {
+            color: var(--rating-yellow);
+            transform: scale(1.1);
+        }
+
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .review-item {
+            background: var(--background-light);
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .review-rating {
+            color: var(--rating-yellow);
+            font-size: 14px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        /* Profile Selection Modal */
+        .profile-selection {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            margin:0;
+        }
+
+        .profile-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            border:2px solid white;
+        }
+
+        .profile-option.selected {
+            border-color: var(--primary-blue);
+        }
+
+        .profile-option img {
+            width: 40px;
+            height: 40px;
+            border-radius: 30px;
+            object-fit: cover;
+        }
+
+        .custom-file-input {
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .custom-file-input label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .custom-file-input input {
+            display: none;
+        }
+
+        /* Interaction Buttons */
+        .interaction-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .interaction-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-light);
+            background: white;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            flex: 1;
+            justify-content: center;
+        }
+        .interaction-btn:active{
+            transform:scale(0.95);
+        }
+
+        .interaction-btn.active {
+            border-color: var(--golden);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .interaction-btn.like.active {
+            color: var(--golden);
+        }
+
+        .interaction-btn.dislike.active {
+            color: var(--golden);
+        }
+
+        .interaction-btn.like.active i {
+            color: var(--golden);
+        }
+
+        .interaction-btn.dislike.active i {
+            color: var(--golden);
+        }
+
+        .interaction-btn.share {
+            border-color: var(--share-blue);
+        }
+
+        .interaction-btn.share i {
+            color: var(--share-blue);
+        }
+
+        .interaction-btn.share:hover {
+            background: rgba(66, 133, 244, 0.1);
+        }
+
+        /* Review helpful buttons */
+        .review-helpful {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        .helpful-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-light);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .helpful-btn.active {
+            border-color: var(--golden);
+            color: var(--golden);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .helpful-btn.active i {
+            color: var(--golden);
+        }
+        .helpful-btn:active{
+            transform: scale(0.95);
+        }
+
+        /* Image Preview Modal */
+        .image-preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview-content {
+            position: relative;
+            width: 90vw;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            border-radius: 8px;
+        }
+
+        .close-preview {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Professional Alert Modal */
+        .alert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .alert-content {
+            background: var(--card-background);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .alert-icon.success {
+            color: var(--download-green);
+        }
+
+        .alert-icon.warning {
+            color: var(--rating-yellow);
+        }
+
+        .alert-icon.error {
+            color: var(--like-red);
+        }
+
+        .alert-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .alert-message {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .alert-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .alert-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .alert-btn.secondary {
+            background: var(--background-light);
+            color: var(--text-primary);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 48px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            border: 4px solid var(--background-light);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Results */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 48px 16px;
+            color: var(--text-secondary);
+        }
+
+        .no-results i {
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Share Modal */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .share-content {
+            background: var(--card-background);
+            border-radius: 16px;
+            padding: 25px 10px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .share-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 10px;
+        }
+
+        .share-option:hover {
+            background: var(--background-light);
+        }
+
+        .share-option i {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .share-option.facebook i {
+            color: #1877F2;
+        }
+
+        .share-option.twitter i {
+            color: #1DA1F2;
+        }
+
+        .share-option.whatsapp i {
+            color: #25D366;
+        }
+
+        .share-option.copy i {
+            color: var(--primary-blue);
+        }
+
+        .share-url {
+            background: var(--background-light);
+            padding: 10px;
+            border-radius: 12px;
+            margin: 10px 0;
+            font-size: 10px;
+            word-break: break-all;
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+        }
+
+        .share-url:hover {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        /* App Code ID Indicator */
+        .appcodeid-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
+            color: white;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            margin:0;
+        }
+
+        /* TABLET STYLES */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 720px;
+                padding: 0 24px;
+            }
+
+            .logo span {
+                display: inline; /* Show text on tablet */
+            }
+
+            .app-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+
+            .today-content {
+                flex-direction: row;
+                text-align: left;
+                gap: 32px;
+            }
+
+            .today-app-icon {
+                width: 120px;
+                height: 120px;
+            }
+
+            .today-text h1 {
+                font-size: 28px;
+            }
+
+            .today-text p {
+                font-size: 15px;
+            }
+
+            .modal-content {
+                max-width: 600px;
+                margin: 0 auto;
+                min-height: auto;
+                border-radius: 24px;
+                margin: 40px auto;
+            }
+
+            .close-modal {
+                right: 24px;
+                top: 24px;
+            }
+
+            .modal-body {
+                padding: 70px 40px 40px;
+            }
+
+            .preview-image {
+                width: 200px;
+                height: 340px;
+            }
+
+            .profile-selection {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+
+            .download-btn {
+                width: auto;
+                min-width: 200px;
+            }
+
+            .interaction-buttons {
+                gap: 15px;
+            }
+
+            .interaction-btn {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+        }
+
+        /* DESKTOP STYLES */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+                padding: 0 32px;
+            }
+
+            .app-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .modal-content {
+                max-width: 800px;
+            }
+
+            .profile-selection {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .interaction-buttons {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"></div>
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Search apps, games...">
+                    <i class="fas fa-times clear-search"></i>
+                </div>
+                <div class="profile-section">
+                    <img id="headerAvatar" src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png" 
+                         alt="Profile" class="profile-avatar">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Today Highlight -->
+    <div id="todayTab" class="today-highlight" style="display: none;">
+        <div class="container">
+            <div class="today-content">
+                <img id="todayAppIcon" src="" alt="App of the Day" class="today-app-icon">
+                <div class="today-text">
+                    <h2>App of the Day</h2>
+                    <h1 id="todayAppName">Loading...</h1>
+                    <p id="todayAppDescription">Loading app of the day...</p>
+                    <button class="download-btn" id="todayDownloadBtn">Install</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <div class="container">
+            <div class="section-header">
+                <h2>Categories</h2>
+            </div>
+            <div class="category-buttons">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-th-large"></i> All
+                </button>
+                <button class="category-btn" data-category="game">
+                    <i class="fas fa-gamepad"></i> Games
+                </button>
+                <button class="category-btn" data-category="app">
+                    <i class="fas fa-mobile-alt"></i> Apps
+                </button>
+                <button class="category-btn" data-category="social">
+                    <i class="fas fa-users"></i> Social
+                </button>
+                <button class="category-btn" data-category="productivity">
+                    <i class="fas fa-briefcase"></i> Productivity
+                </button>
+                <button class="category-btn" data-category="education">
+                    <i class="fas fa-graduation-cap"></i> Education
+                </button>
+                <button class="category-btn" data-category="photo">
+                    <i class="fas fa-camera"></i> Photo & Video
+                </button>
+                <button class="category-btn" data-category="music">
+                    <i class="fas fa-music"></i> Music
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="section-header">
+            <h2>Featured Apps</h2>
+            <div class="see-all" id="seeAllBtn">
+                See All
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+        <div id="appGrid" class="app-grid">
+            <!-- Apps will be loaded here -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading apps...</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- App Detail Modal -->
+    <div id="appModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div id="modalContent">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="imagePreviewModal" class="image-preview-modal">
+        <div class="image-preview-content">
+            <img id="previewedImage" src="" alt="Preview">
+            <div class="close-preview">&times;</div>
+        </div>
+    </div>
+    
+    <!-- App Store Tabs -->
+    <div class="app-tabs">
+        <div class="container">
+            <div class="tab active" data-tab="today">
+                <i class="fas fa-gift"></i>
+                <span>Today</span>
+            </div>
+            <div class="tab" data-tab="games">
+                <i class="fas fa-gamepad"></i>
+                <span>Games</span>
+            </div>
+            <div class="tab" data-tab="apps">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Apps</span>
+            </div>
+            <div class="tab" data-tab="arcade">
+                <i class="fas fa-crown"></i>
+                <span>Arcade</span>
+            </div>
+            <div class="tab" data-tab="search">
+                <i class="fas fa-search"></i>
+                <span>Search</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Selection Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="close-modal">&times;</button>
+            <div class="modal-body">
+                <h2 style="margin-bottom: 10px;">Set Up Your Profile</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 10px; font-size:10px;">Choose an avatar or upload your own photo</p>
+                
+                <div class="profile-selection" id="profileSelection">
+                    <!-- Profile options will be added by JavaScript -->
+                </div>
+                
+                <div class="custom-file-input">
+                    <input type="file" id="customProfilePic" accept="image/*">
+                    <label for="customProfilePic">
+                        <i class="fas fa-upload"></i> Select from gallery
+                    </label>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <input type="text" id="userName" placeholder="Enter your name (optional)" 
+                           style="width: 100%; padding: 16px; border: 2px solid var(--border-light); border-radius: 12px; font-size: 15px;">
+                </div>
+                
+                <button id="saveProfileBtn" class="download-btn" style="width: 100%; justify-content: center; background: var(--primary-blue);">
+                    <i class="fas fa-check"></i>
+                    Save Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Alert Modal -->
+    <div id="alertModal" class="alert-modal">
+        <div class="alert-content">
+            <div id="alertIcon" class="alert-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 id="alertTitle" class="alert-title">Success</h3>
+            <p id="alertMessage" class="alert-message">Operation completed successfully.</p>
+            <div class="alert-buttons">
+                <button id="alertConfirm" class="alert-btn primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="share-modal">
+        <div class="share-content">
+            <h3 style="margin-bottom: 10px;">Share App</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 10px;">Share this app with your friends</p>
+            
+            <div class="share-options">
+                <div class="share-option facebook" data-platform="facebook">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </div>
+                <div class="share-option twitter" data-platform="twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </div>
+                <div class="share-option whatsapp" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="share-option copy" data-platform="copy">
+                    <i class="fas fa-copy"></i>
+                    <span>Copy</span>
+                </div>
+            </div>
+            
+            <div class="share-url" id="shareUrl">
+                <!-- Share URL will be inserted here -->
+            </div>
+            
+            <div class="alert-buttons">
+                <button id="closeShareModal" class="alert-btn secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Feedback Element -->
+    <div id="quickFeedback" class="quick-feedback"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Global Variables
+    let currentUser = null;
+    let currentAppDetails = null;
+    let apps = [];
+    let currentProfilePic = null;
+    let pendingReview = null;
+    let currentTab = 'today';
+    let appOfTheDay = null;
+    let lastResetDate = null;
+    let appCodeToOpen = null;
+    let isModalLoading = false;
+    let isSubmittingReview = false;
+    let debounceTimer = null;
+
+    // Profile Pictures
+    const PROFILE_PICTURES = [
+        'https://cdn-icons-png.flaticon.com/512/9203/9203764.png',
+        'https://cdn-icons-png.flaticon.com/512/219/219986.png',
+        'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+        'https://cdn-icons-png.flaticon.com/512/147/147144.png',
+        'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+        'https://cdn-icons-png.flaticon.com/512/4140/4140047.png',
+        'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
+        'https://cdn-icons-png.flaticon.com/512/4333/4333609.png',
+        'https://cdn-icons-png.flaticon.com/512/924/924874.png',
+        'https://cdn-icons-png.flaticon.com/512/924/924875.png'
+    ];
+
+    // NEW: Show quick feedback message
+    function showQuickFeedback(message, type = 'info') {
+        const feedback = document.getElementById('quickFeedback');
+        feedback.textContent = message;
+        feedback.style.display = 'block';
+        feedback.style.background = type === 'success' ? 'var(--download-green)' : 
+                                  type === 'error' ? 'var(--like-red)' : 
+                                  'var(--primary-blue)';
+        
+        // Auto-hide after 2 seconds
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, 2000);
+    }
+
+    // Professional Alert System
+    function showAlert(title, message, type = 'success', confirmText = 'OK') {
+        const alertModal = document.getElementById('alertModal');
+        const alertIcon = document.getElementById('alertIcon');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertConfirm = document.getElementById('alertConfirm');
+        
+        // Set content based on type
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+        alertConfirm.textContent = confirmText;
+        
+        // Set icon and color based on type
+        alertIcon.className = 'alert-icon ' + type;
+        const icon = type === 'success' ? 'fa-check-circle' : 
+                     type === 'warning' ? 'fa-exclamation-triangle' : 
+                     'fa-exclamation-circle';
+        alertIcon.innerHTML = `<i class="fas ${icon}"></i>`;
+        
+        // Show modal
+        alertModal.style.display = 'flex';
+        
+        // Set up close handler
+        alertConfirm.onclick = function() {
+            alertModal.style.display = 'none';
+        };
+        
+        // Close on backdrop click
+        alertModal.onclick = function(e) {
+            if (e.target === alertModal) {
+                alertModal.style.display = 'none';
+            }
+        };
+    }
+
+    // Initialize Firebase
+    function initializeFirebase() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUC9dI7I6ssJyj9a6MxNwt2UPlYvO8Eyk",
+            authDomain: "kimiapifirebase.firebaseapp.com",
+            databaseURL: "https://kimiapifirebase-default-rtdb.firebaseio.com",
+            projectId: "kimiapifirebase",
+            storageBucket: "kimiapifirebase.firebasestorage.app",
+            messagingSenderId: "982417347295",
+            appId: "1:982417347295:web:58a63f7eb9a49e6dc9cf6a",
+            measurementId: "G-KXZYPV6R1G"
+        };
+
+        try {
+            if (firebase.apps.length === 0) {
+                const app = firebase.initializeApp(firebaseConfig);
+                window.database = firebase.database();
+                return app;
+            }
+            return firebase.app();
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            showAlert('Error', 'Failed to initialize Firebase. Using offline mode.', 'error');
+            return null;
+        }
+    }
+
+    // Generate UID
+    function generateUID(name) {
+        let prefix = '##';
+        if (name && name.trim()) {
+            const firstTwo = name.trim().substring(0, 2).toUpperCase();
+            prefix = firstTwo.length === 2 ? firstTwo : firstTwo + 'A';
+        }
+        const randomNumbers = Math.floor(Math.random() * 10000000000).toString().padStart(10, '0');
+        return prefix + randomNumbers;
+    }
+
+    // Check URL for appcodeid parameter
+    function checkURLForAppCode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const appCodeId = urlParams.get('appid');
+        
+        if (appCodeId) {
+            appCodeToOpen = appCodeId.trim();
+            return true;
+        }
+        return false;
+    }
+
+    // Open app by appcodeid
+    function openAppByCodeId(appCodeId) {
+        if (!appCodeId || !apps.length) return null;
+        
+        // Find apps with matching appcodeid
+        const matchingApps = apps.filter(app => app.appcodeid === appCodeId);
+        
+        if (matchingApps.length === 1) {
+            // Exactly one app found - open it directly
+            openAppModal(matchingApps[0].id);
+            return matchingApps[0];
+        } else if (matchingApps.length > 1) {
+            // Multiple apps with same appcodeid - show filtered view
+            showAppsWithDuplicateAppCodeId(matchingApps, appCodeId);
+            return null;
+        } else {
+            // No app found
+            showAlert('Not Found', `No app found with code: ${appCodeId}`, 'warning');
+            return null;
+        }
+    }
+
+    // Show apps with duplicate appcodeid
+    function showAppsWithDuplicateAppCodeId(matchingApps, appCodeId) {
+        const appGrid = document.getElementById('appGrid');
+        
+        appGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                <h3 style="margin-bottom: 20px; color: var(--text-primary);">Multiple Apps Found with Code: ${appCodeId}</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 30px;">Please select one:</p>
+            </div>
+            ${matchingApps.map(app => `
+                <div class="app-card" data-app="${app.id}">
+                    <div class="category-tag">${app.category === 'game' ? 'Game' : (app.category || 'App').charAt(0).toUpperCase() + (app.category || 'App').slice(1)}</div>
+                    <img src="${app.image}" alt="${app.name}" class="app-image">
+                    <div class="app-info">
+                        <img src="${app.logo}" alt="${app.name} Logo" class="app-logo">
+                        <div class="app-title-row">
+                            <div>
+                                <h3 class="app-title">${app.name}</h3>
+                                <p class="app-developer">${app.developer}</p>
+                            </div>
+                            <button class="app-get-btn" data-app="${app.id}">
+                                GET
+                            </button>
+                        </div>
+                        <div class="app-stats">
+                            <div class="rating">
+                                <i class="fas fa-star"></i> ${app.rating}
+                            </div>
+                            <div class="download-count">
+                            ${(app.downloads || 0).toLocaleString()} Downloads
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+        
+        // Add click handlers for these cards
+        document.querySelectorAll('.app-card[data-app]').forEach(card => {
+            card.addEventListener('click', () => {
+                const appId = card.dataset.app;
+                openAppModal(appId);
+            });
+        });
+        
+        document.querySelectorAll('.app-get-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                downloadApp(btn.dataset.app);
+            });
+        });
+    }
+
+    // Generate share URL for app
+    function generateShareUrl(app) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        return `${baseUrl}?appid=${app.appcodeid}`;
+    }
+
+    // Show share modal
+    function showShareModal(app) {
+        const shareModal = document.getElementById('shareModal');
+        const shareUrl = generateShareUrl(app);
+        const shareUrlElement = document.getElementById('shareUrl');
+        
+        shareUrlElement.textContent = shareUrl;
+        shareUrlElement.title = 'Click to copy';
+        
+        shareModal.style.display = 'flex';
+        
+        // Setup share options
+        const shareOptions = document.querySelectorAll('.share-option');
+        shareOptions.forEach(option => {
+            option.onclick = function() {
+                const platform = this.dataset.platform;
+                shareApp(platform, app, shareUrl);
+            };
+        });
+        
+        // Close button
+        document.getElementById('closeShareModal').onclick = function() {
+            shareModal.style.display = 'none';
+        };
+        
+        // Close on backdrop click
+        shareModal.onclick = function(e) {
+            if (e.target === shareModal) {
+                shareModal.style.display = 'none';
+            }
+        };
+        
+        // Copy URL on click
+        shareUrlElement.onclick = function() {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showAlert('Success', 'Link copied to clipboard!', 'success');
+            });
+        };
+    }
+
+    // Share app to different platforms
+    function shareApp(platform, app, shareUrl) {
+        const shareText = `Check out ${app.name} - ${app.description || 'Amazing app!'}`;
+        
+        switch(platform) {
+            case 'facebook':
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank');
+                break;
+            case 'twitter':
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+                break;
+            case 'whatsapp':
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank');
+                break;
+            case 'copy':
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showAlert('Success', 'Link copied to clipboard!', 'success');
+                });
+                break;
+        }
+        
+        // Close modal after sharing
+        document.getElementById('shareModal').style.display = 'none';
+    }
+
+    // Load user profile
+    function loadUserProfile() {
+        try {
+            const savedProfile = localStorage.getItem('userProfile');
+            if (savedProfile) {
+                currentUser = JSON.parse(savedProfile);
+                document.getElementById('headerAvatar').src = currentUser.profilePic || PROFILE_PICTURES[0];
+                currentProfilePic = currentUser.profilePic || PROFILE_PICTURES[0];
+                return true;
+            }
+        } catch (error) {
+            console.error("Error loading user profile:", error);
+        }
+        return false;
+    }
+
+    // Show profile modal
+    function showProfileModal() {
+        const modal = document.getElementById('profileModal');
+        const profileSelection = document.getElementById('profileSelection');
+        
+        if (!currentProfilePic) {
+            currentProfilePic = PROFILE_PICTURES[0];
+        }
+        
+        profileSelection.innerHTML = PROFILE_PICTURES.map((pic, index) => `
+            <div class="profile-option ${pic === currentProfilePic ? 'selected' : ''}" data-pic="${pic}">
+                <img src="${pic}">
+            </div>
+        `).join('');
+        
+        document.getElementById('userName').value = currentUser ? currentUser.name : '';
+        modal.style.display = 'block';
+    }
+
+    function closeProfileModal() {
+        document.getElementById('profileModal').style.display = 'none';
+    }
+
+    function handleCustomProfilePic(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentProfilePic = e.target.result;
+                const profileSelection = document.getElementById('profileSelection');
+                profileSelection.innerHTML = `
+                    <div class="profile-option selected" data-pic="custom">
+                        <img src="${e.target.result}" alt="Custom Avatar">
+                        <div>Custom</div>
+                    </div>
+                    ${PROFILE_PICTURES.map((pic, index) => `
+                        <div class="profile-option" data-pic="${pic}">
+                            <img src="${pic}">
+                        </div>
+                    `).join('')}
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveProfile() {
+        const userName = document.getElementById('userName').value;
+        const uid = generateUID(userName);
+        
+        currentUser = {
+            uid: uid,
+            name: userName || 'Anonymous',
+            profilePic: currentProfilePic || PROFILE_PICTURES[0]
+        };
+        
+        localStorage.setItem('userProfile', JSON.stringify(currentUser));
+        document.getElementById('headerAvatar').src = currentUser.profilePic;
+        closeProfileModal();
+        
+        showAlert('Success', 'Profile saved successfully!', 'success');
+        
+        // Retry pending review if exists
+        if (pendingReview) {
+            const { appId, rating, text } = pendingReview;
+            pendingReview = null;
+            
+            if (currentUser) {
+                openAppModal(appId);
+                setTimeout(() => {
+                    const stars = document.querySelectorAll('.rating-input i');
+                    stars.forEach((star, index) => {
+                        if (index < rating) {
+                            star.click();
+                        }
+                    });
+                    document.getElementById('reviewText').value = text;
+                }, 500);
+            }
+        }
+    }
+
+    // Switch tabs
+    function switchTab(tabName) {
+        currentTab = tabName;
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+        
+        // Show/hide content based on tab
+        const todayTab = document.getElementById('todayTab');
+        const categoryFilter = document.querySelector('.category-filter');
+        const mainContent = document.querySelector('main');
+        
+        if (tabName === 'today') {
+            todayTab.style.display = 'block';
+            categoryFilter.style.display = 'block';
+            mainContent.style.display = 'block';
+            displayApps(apps);
+            updateAppOfTheDay();
+        } else if (tabName === 'games') {
+            todayTab.style.display = 'none';
+            categoryFilter.style.display = 'none';
+            mainContent.style.display = 'block';
+            const filteredApps = apps.filter(app => app.category === 'game');
+            displayApps(filteredApps);
+        } else if (tabName === 'apps') {
+            todayTab.style.display = 'none';
+            categoryFilter.style.display = 'none';
+            mainContent.style.display = 'block';
+            const filteredApps = apps.filter(app => app.category !== 'game');
+            displayApps(filteredApps);
+        } else if (tabName === 'arcade') {
+            todayTab.style.display = 'none';
+            categoryFilter.style.display = 'none';
+            mainContent.style.display = 'block';
+            displayApps(apps.filter(app => app.category === 'game'));
+        } else if (tabName === 'search') {
+            todayTab.style.display = 'none';
+            categoryFilter.style.display = 'none';
+            mainContent.style.display = 'block';
+            document.getElementById('searchInput').focus();
+        }
+    }
+
+    // Determine App of the Day
+    async function determineAppOfTheDay() {
+        try {
+            const today = new Date().toDateString();
+            const lastReset = localStorage.getItem('lastResetDate');
+            
+            // Check if we need to reset (new day)
+            if (lastReset !== today) {
+                localStorage.setItem('lastResetDate', today);
+                
+                if (apps.length > 0) {
+                    // Find app with most downloads
+                    let maxDownloads = -1;
+                    let selectedApp = null;
+                    
+                    apps.forEach(app => {
+                        if (app.downloads > maxDownloads) {
+                            maxDownloads = app.downloads;
+                            selectedApp = app;
+                        }
+                    });
+                    
+                    appOfTheDay = selectedApp;
+                    localStorage.setItem('appOfTheDay', JSON.stringify({
+                        appId: selectedApp.id,
+                        date: today
+                    }));
+                    
+                    return selectedApp;
+                }
+            } else {
+                // Load from localStorage
+                const saved = localStorage.getItem('appOfTheDay');
+                if (saved) {
+                    const { appId, date } = JSON.parse(saved);
+                    if (date === today) {
+                        appOfTheDay = apps.find(app => app.id === appId);
+                        return appOfTheDay;
+                    }
+                }
+            }
+            
+            // Fallback: first app or random
+            if (apps.length > 0) {
+                appOfTheDay = apps[0];
+                return appOfTheDay;
+            }
+        } catch (error) {
+            console.error("Error determining app of the day:", error);
+        }
+        return null;
+    }
+
+    // Update App of the Day display
+    function updateAppOfTheDay() {
+        const todayTab = document.getElementById('todayTab');
+        
+        if (appOfTheDay) {
+            document.getElementById('todayAppIcon').src = appOfTheDay.logo;
+            document.getElementById('todayAppName').textContent = appOfTheDay.name;
+            document.getElementById('todayAppDescription').textContent = appOfTheDay.description || 'Check out today\'s featured app!';
+            document.getElementById('todayDownloadBtn').dataset.app = appOfTheDay.id;
+            todayTab.style.display = 'block';
+        } else {
+            todayTab.style.display = 'none';
+        }
+    }
+
+    // Load apps from Firebase
+    async function loadApps() {
+        try {
+            if (window.database) {
+                const appsRef = window.database.ref('apps');
+                appsRef.on('value', async (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        apps = Object.entries(data).map(([id, app]) => ({ id, ...app }));
+                        // Determine App of the Day
+                        await determineAppOfTheDay();
+                        updateAppOfTheDay();
+                        displayApps(apps);
+                        
+                        // Check if we need to open app by appcodeid from URL
+                        if (appCodeToOpen) {
+                            setTimeout(() => {
+                                openAppByCodeId(appCodeToOpen);
+                                appCodeToOpen = null;
+                            }, 500);
+                        }
+                        
+                        if (apps.length === 0) {
+                            addSampleApps();
+                        }
+                    } else {
+                        addSampleApps();
+                    }
+                });
+            } else {
+                addSampleApps();
+            }
+        } catch (error) {
+            console.error("Error loading apps:", error);
+            addSampleApps();
+        }
+    }
+
+    // Add sample apps with appcodeid
+    function addSampleApps() {
+        const sampleApps = {};
+
+        if (window.database) {
+            Object.entries(sampleApps).forEach(([id, app]) => {
+                window.database.ref('apps/' + id).set(app);
+            });
+        } else {
+            apps = Object.entries(sampleApps).map(([id, app]) => ({ id, ...app }));
+            determineAppOfTheDay().then(() => {
+                displayApps(apps);
+                updateAppOfTheDay();
+                
+                // Check if we need to open app by appcodeid from URL
+                if (appCodeToOpen) {
+                    setTimeout(() => {
+                        openAppByCodeId(appCodeToOpen);
+                        appCodeToOpen = null;
+                    }, 500);
+                }
+            });
+        }
+    }
+
+    // Display apps
+    function displayApps(appsList) {
+        const appGrid = document.getElementById('appGrid');
+        
+        if (!appsList || appsList.length === 0) {
+            appGrid.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>No apps found</h3>
+                    <p>Try adjusting your search or filter</p>
+                </div>
+            `;
+            return;
+        }
+
+        appGrid.innerHTML = appsList.map(app => `
+            <div class="app-card" data-app="${app.id}">
+             <div class="category-tag">${app.category === 'game' ? 'Game' : (app.category || 'App').charAt(0).toUpperCase() + (app.category || 'App').slice(1)}</div>
+                <img src="${app.image}" alt="${app.name}" class="app-image">
+                <div class="app-info">
+                    <img src="${app.logo}" alt="${app.name} Logo" class="app-logo">
+                    <div class="app-title-row">
+                        <div>
+                            <h3 class="app-title">${app.name}</h3>
+                            <p class="app-developer">${app.developer}</p>
+                            ${app.appcodeid ? `<div class="appcodeid-badge">${app.appcodeid}</div>` : ''}
+                        </div>
+                        <button class="app-get-btn" data-app="${app.id}">
+                            GET
+                        </button>
+                    </div>
+                    <div class="app-stats">
+                        <div class="rating">
+                            <i class="fas fa-star"></i> ${app.rating}
+                        </div>
+                        <div class="download-count">
+                        ${(app.downloads || 0).toLocaleString()} Downloads
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        `).join('');
+    }
+
+    // NEW: Show loading skeleton in modal
+    function showModalLoading() {
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+            <div class="modal-loading">
+                <div class="spinner"></div>
+                <h3>Loading App Details</h3>
+                <p>Please wait while we load the app information...</p>
+            </div>
+        `;
+    }
+
+    // Open app modal with improved performance
+    async function openAppModal(appId) {
+        // Prevent multiple rapid clicks
+        if (isModalLoading) return;
+        
+        const app = apps.find(a => a.id === appId);
+        if (!app) return;
+
+        currentAppDetails = app;
+        
+        // Show modal immediately with loading state
+        const modal = document.getElementById('appModal');
+        showModalLoading();
+        modal.style.display = 'block';
+        document.body.classList.add('modal-open');
+        isModalLoading = true;
+        
+        // Show quick feedback
+        showQuickFeedback('Loading app details...');
+        
+        try {
+            // Load reviews with helpful counts
+            const reviews = await loadReviews(appId);
+            
+            // Load user interactions
+            const interactions = await loadUserInteractions(appId);
+            
+            // Update modal content
+            updateModalContent(app, reviews, interactions);
+        } catch (error) {
+            console.error("Error loading app details:", error);
+            showAlert('Error', 'Failed to load app details. Please try again.', 'error');
+        } finally {
+            isModalLoading = false;
+        }
+    }
+
+    // Update modal content
+    function updateModalContent(app, reviews, interactions) {
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+            <div class="modal-header">
+                <img src="${app.image}" alt="${app.name}">
+                <img src="${app.logo}" alt="${app.name} Logo" class="modal-app-logo">
+            </div>
+            <div class="modal-body">
+                <h1 class="modal-title">${app.name}</h1>
+                <p class="modal-developer">${app.developer}</p>
+                
+                ${app.appcodeid ? `<div class="appcodeid-badge" style="margin-bottom: 10px;">Package id: ${app.appcodeid}</div>` : ''}
+                
+                <div class="modal-stats">
+    <div class="stat-item">
+        <div class="stat-top">
+            <span class="stat-value">${app.rating}</span>
+            <i class="fas fa-star star-icon"></i>
+        </div>
+        <div class="stat-bottom">${reviews.length} reviews</div>
+    </div>
+
+    <div class="stat-item">
+        <div class="stat-top">
+            <i class="fas fa-download download-icon"></i>
+        </div>
+        <div class="stat-bottom">${app.size}</div>
+    </div>
+
+    <div class="stat-item">
+        <div class="stat-top">${app.ageRating}</div>
+        <div class="stat-bottom">Rated for ${app.ageRating}</div>
+    </div>
+
+    <div class="stat-item no-border">
+        <div class="stat-top">${(app.downloads || 0).toLocaleString()}</div>
+        <div class="stat-bottom">Downloads</div>
+    </div>
+</div>
+                
+                <div class="interaction-buttons">
+                    <button class="interaction-btn like ${interactions.liked ? 'active' : ''}" data-app="${app.id}">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>${app.likes || 0}</span>
+                    </button>
+                    <button class="interaction-btn dislike ${interactions.disliked ? 'active' : ''}" data-app="${app.id}">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span>${app.dislikes || 0}</span>
+                    </button>
+                    <button class="interaction-btn share" data-app="${app.id}">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+                 <h3 style="margin-bottom: 10px;">About this app</h3>
+                <p style="margin: 10px 0; line-height: 1.6; font-size: 12px; font-weight:500;">${app.description}</p>
+                
+                <button class="download-btn" data-app="${app.id}">Download</button>
+                
+                ${app.previewImages && app.previewImages.length > 0 ? `
+                    <div style="margin: 10px 0;">
+                        <h3 style="margin-bottom: 10px;">Preview</h3>
+                        <div class="preview-images">
+                            ${app.previewImages.map(img => `
+                                <img src="${img}" alt="Preview" class="preview-image" data-image="${img}">
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="reviews-section">
+                    <h3 style="margin-bottom: 20px;">Reviews (${reviews.length})</h3>
+                    
+                    <div class="review-form" id="reviewForm">
+                        <h4>Write a Review</h4>
+                        <h5 style="margin-bottom: 5px;">Rate this app</h5>
+                        <div class="rating-input">
+                            ${[1,2,3,4,5].map(i => `
+                                <i class="fas fa-star" data-rating="${i}"></i>
+                            `).join('')}
+                        </div>
+                        <h6 style="font-weight:100;">Tell others what you think</h6>
+                        <textarea id="reviewText" placeholder="Share your experience with this app..." rows="3"></textarea>
+                        <button class="download-btn"style="width: 100%; justify-content: center; background: var(--primary-blue);"id="submitReviewBtn" data-app="${app.id}" data-action="review">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Review
+                        </button>
+                    </div>
+                    
+                    <div class="reviews-list" id="reviewsList">
+                        ${reviews.map(review => `
+                            <div class="review-item" data-review-id="${review.id}">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <img src="${review.profilePic || PROFILE_PICTURES[0]}" alt="Reviewer" class="reviewer-avatar">
+                                        <div>
+                                            <strong>${review.userName || 'Unknown User'}</strong>
+                                            <div class="review-rating">
+                                                ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small style="color: var(--text-secondary);">${new Date(review.timestamp).toLocaleDateString()}</small>
+                                </div>
+                                <p class="review-text">${review.text}</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn helpful-like ${review.userLiked ? 'active' : ''}" data-review-id="${review.id}">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        <span>${review.helpfulLikes || 0}</span>
+                                    </button>
+                                    <button class="helpful-btn helpful-dislike ${review.userDisliked ? 'active' : ''}" data-review-id="${review.id}">
+                                        <i class="fas fa-thumbs-down"></i>
+                                        <span>${review.helpfulDislikes || 0}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Setup rating stars
+        setupRatingStars();
+    }
+
+    // Setup rating stars
+    function setupRatingStars() {
+        const stars = document.querySelectorAll('.rating-input i');
+        let currentRating = 0;
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                currentRating = parseInt(star.dataset.rating);
+                updateStars(currentRating);
+            });
+            
+            star.addEventListener('mouseover', () => {
+                const rating = parseInt(star.dataset.rating);
+                updateStars(rating);
+            });
+        });
+        
+        const ratingInput = document.querySelector('.rating-input');
+        if (ratingInput) {
+            ratingInput.addEventListener('mouseleave', () => {
+                updateStars(currentRating);
+            });
+        }
+    }
+
+    function updateStars(rating) {
+        const stars = document.querySelectorAll('.rating-input i');
+        stars.forEach((star, index) => {
+            star.className = index < rating ? 'fas fa-star active' : 'fas fa-star';
+        });
+    }
+
+    // Load reviews with helpful counts
+    async function loadReviews(appId) {
+        try {
+            if (!window.database) return [];
+            const reviewsRef = window.database.ref(`reviews/${appId}`);
+            return new Promise((resolve) => {
+                reviewsRef.once('value', async (snapshot) => {
+                    const reviews = snapshot.val();
+                    if (reviews) {
+                        const reviewsList = Object.entries(reviews).map(([id, review]) => ({ id, ...review }));
+                        
+                        // Load helpful counts for each review
+                        for (let review of reviewsList) {
+                            const helpfulData = await loadReviewHelpful(appId, review.id);
+                            review.helpfulLikes = helpfulData.likes || 0;
+                            review.helpfulDislikes = helpfulData.dislikes || 0;
+                            
+                            // Check if current user has liked/disliked this review
+                            if (currentUser && window.database) {
+                                const userInteractionRef = window.database.ref(`reviewInteractions/${appId}/${review.id}/${currentUser.uid}`);
+                                const interactionSnapshot = await userInteractionRef.once('value');
+                                const interaction = interactionSnapshot.val();
+                                if (interaction) {
+                                    review.userLiked = interaction.liked || false;
+                                    review.userDisliked = interaction.disliked || false;
+                                }
+                            }
+                        }
+                        
+                        resolve(reviewsList.sort((a, b) => b.timestamp - a.timestamp));
+                    } else {
+                        resolve([]);
+                    }
+                });
+            });
+        } catch (error) {
+            console.error("Error loading reviews:", error);
+            return [];
+        }
+    }
+
+    // Load review helpful counts
+    async function loadReviewHelpful(appId, reviewId) {
+        try {
+            if (!window.database) return { likes: 0, dislikes: 0 };
+            const helpfulRef = window.database.ref(`reviewHelpful/${appId}/${reviewId}`);
+            return new Promise((resolve) => {
+                helpfulRef.once('value', (snapshot) => {
+                    const data = snapshot.val();
+                    resolve(data || { likes: 0, dislikes: 0 });
+                });
+            });
+        } catch (error) {
+            console.error("Error loading review helpful:", error);
+            return { likes: 0, dislikes: 0 };
+        }
+    }
+
+    // Load user interactions
+    async function loadUserInteractions(appId) {
+        if (!currentUser || !window.database) return { liked: false, disliked: false };
+        
+        try {
+            const interactionsRef = window.database.ref(`interactions/${appId}/${currentUser.uid}`);
+            return new Promise((resolve) => {
+                interactionsRef.once('value', (snapshot) => {
+                    const data = snapshot.val();
+                    resolve(data || { liked: false, disliked: false });
+                });
+            });
+        } catch (error) {
+            console.error("Error loading interactions:", error);
+            return { liked: false, disliked: false };
+        }
+    }
+
+    // NEW: Enhanced submit review with loading state
+    async function submitReview(appId) {
+        if (isSubmittingReview) return;
+        
+        if (!appId) {
+            appId = currentAppDetails ? currentAppDetails.id : null;
+        }
+        if (!appId) return;
+        
+        const stars = document.querySelectorAll('.rating-input i');
+        const rating = Array.from(stars).filter(star => star.classList.contains('active')).length;
+        const text = document.getElementById('reviewText')?.value.trim();
+        
+        if (!currentUser) {
+            pendingReview = { appId: appId, rating, text };
+            showProfileModal();
+            return;
+        }
+        
+        if (rating === 0) {
+            showAlert('Warning', 'Please select a rating', 'warning');
+            return;
+        }
+        
+        if (!text) {
+            showAlert('Warning', 'Please write a review', 'warning');
+            return;
+        }
+        
+        // Disable form and show loading
+        const submitBtn = document.getElementById('submitReviewBtn');
+        const reviewForm = document.getElementById('reviewForm');
+        
+        if (submitBtn && reviewForm) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-loading');
+            reviewForm.classList.add('processing');
+            isSubmittingReview = true;
+        }
+        
+        // Show instant feedback
+        showQuickFeedback('Submitting review...');
+        
+        const reviewId = generateUID(currentUser.name);
+        const review = {
+            id: reviewId,
+            uid: currentUser.uid,
+            userName: currentUser.name,
+            profilePic: currentUser.profilePic,
+            rating: rating,
+            text: text,
+            timestamp: Date.now()
+        };
+        
+        try {
+            if (window.database) {
+                await window.database.ref(`reviews/${appId}/${reviewId}`).set(review);
+                await updateAppRating(appId);
+                
+                // Reset form
+                document.getElementById('reviewText').value = '';
+                updateStars(0);
+                
+                // Reload modal to show new review
+                openAppModal(appId);
+                
+                // Show success message
+                showAlert('Success', 'Review submitted successfully!', 'success');
+            } else {
+                showAlert('Success', 'Review submitted (offline mode)!', 'success');
+            }
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            showAlert('Error', 'Failed to submit review. Please try again.', 'error');
+        } finally {
+            // Re-enable form
+            if (submitBtn && reviewForm) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-loading');
+                reviewForm.classList.remove('processing');
+                isSubmittingReview = false;
+            }
+        }
+    }
+
+    // Update app rating
+    async function updateAppRating(appId) {
+        try {
+            const reviews = await loadReviews(appId);
+            if (reviews.length === 0) return;
+            
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = totalRating / reviews.length;
+            
+            await window.database.ref(`apps/${appId}/rating`).set(averageRating.toFixed(1));
+        } catch (error) {
+            console.error("Error updating app rating:", error);
+        }
+    }
+
+    // NEW: Enhanced like/dislike with immediate feedback
+    async function handleAppLike(appId) {
+        if (!currentUser) {
+            showProfileModal();
+            return;
+        }
+        
+        const likeBtn = document.querySelector(`.interaction-btn.like[data-app="${appId}"]`);
+        if (likeBtn && likeBtn.classList.contains('processing')) return;
+        
+        if (likeBtn) {
+            likeBtn.classList.add('processing');
+        }
+        
+        if (!window.database) {
+            showAlert('Info', 'Offline mode - like saved locally', 'warning');
+            if (likeBtn) likeBtn.classList.remove('processing');
+            return;
+        }
+        
+        try {
+            const interactionsRef = window.database.ref(`interactions/${appId}/${currentUser.uid}`);
+            const snapshot = await interactionsRef.once('value');
+            const current = snapshot.val() || { liked: false, disliked: false };
+            
+            // User is trying to like
+            const newState = {
+                liked: !current.liked,
+                disliked: false // Can't have both like and dislike
+            };
+            
+            await interactionsRef.set(newState);
+            
+            // Update app likes count
+            const appRef = window.database.ref(`apps/${appId}`);
+            const appSnapshot = await appRef.once('value');
+            const app = appSnapshot.val();
+            
+            const likes = (app.likes || 0) + (newState.liked && !current.liked ? 1 : current.liked && !newState.liked ? -1 : 0);
+            const dislikes = (app.dislikes || 0) + (current.disliked && !newState.disliked ? -1 : 0);
+            
+            await appRef.update({ likes, dislikes });
+            
+            // Show immediate feedback
+            showQuickFeedback(newState.liked ? 'Liked!' : 'Like removed', 'success');
+            
+            // Refresh the modal
+            openAppModal(appId);
+        } catch (error) {
+            console.error("Error handling like:", error);
+            showAlert('Error', 'Failed to process like action', 'error');
+        } finally {
+            if (likeBtn) likeBtn.classList.remove('processing');
+        }
+    }
+
+    async function handleAppDislike(appId) {
+        if (!currentUser) {
+            showProfileModal();
+            return;
+        }
+        
+        const dislikeBtn = document.querySelector(`.interaction-btn.dislike[data-app="${appId}"]`);
+        if (dislikeBtn && dislikeBtn.classList.contains('processing')) return;
+        
+        if (dislikeBtn) {
+            dislikeBtn.classList.add('processing');
+        }
+        
+        if (!window.database) {
+            showAlert('Info', 'Offline mode - dislike saved locally', 'warning');
+            if (dislikeBtn) dislikeBtn.classList.remove('processing');
+            return;
+        }
+        
+        try {
+            const interactionsRef = window.database.ref(`interactions/${appId}/${currentUser.uid}`);
+            const snapshot = await interactionsRef.once('value');
+            const current = snapshot.val() || { liked: false, disliked: false };
+            
+            // User is trying to dislike
+            const newState = {
+                disliked: !current.disliked,
+                liked: false // Can't have both like and dislike
+            };
+            
+            await interactionsRef.set(newState);
+            
+            // Update app dislikes count
+            const appRef = window.database.ref(`apps/${appId}`);
+            const appSnapshot = await appRef.once('value');
+            const app = appSnapshot.val();
+            
+            const dislikes = (app.dislikes || 0) + (newState.disliked && !current.disliked ? 1 : current.disliked && !newState.disliked ? -1 : 0);
+            const likes = (app.likes || 0) + (current.liked && !newState.liked ? -1 : 0);
+            
+            await appRef.update({ likes, dislikes });
+            
+            // Show immediate feedback
+            showQuickFeedback(newState.disliked ? 'Disliked!' : 'Dislike removed', 'success');
+            
+            // Refresh the modal
+            openAppModal(appId);
+        } catch (error) {
+            console.error("Error handling dislike:", error);
+            showAlert('Error', 'Failed to process dislike action', 'error');
+        } finally {
+            if (dislikeBtn) dislikeBtn.classList.remove('processing');
+        }
+    }
+
+    // Handle share button click
+    function handleShareApp(appId) {
+        const app = apps.find(a => a.id === appId);
+        if (app) {
+            showShareModal(app);
+        }
+    }
+
+    // NEW: Enhanced review helpful with immediate feedback
+    async function handleReviewHelpful(appId, reviewId, type) {
+        if (!currentUser) {
+            showProfileModal();
+            return;
+        }
+        
+        const helpfulBtn = document.querySelector(`.helpful-btn[data-review-id="${reviewId}"]`);
+        if (helpfulBtn && helpfulBtn.classList.contains('processing')) return;
+        
+        if (helpfulBtn) {
+            helpfulBtn.classList.add('processing');
+        }
+        
+        if (!window.database) {
+            showAlert('Info', 'Offline mode - action saved locally', 'warning');
+            if (helpfulBtn) helpfulBtn.classList.remove('processing');
+            return;
+        }
+        
+        try {
+            const interactionRef = window.database.ref(`reviewInteractions/${appId}/${reviewId}/${currentUser.uid}`);
+            const snapshot = await interactionRef.once('value');
+            const current = snapshot.val() || { liked: false, disliked: false };
+            
+            let newState;
+            if (type === 'like') {
+                // Toggle like, remove dislike if present
+                newState = {
+                    liked: !current.liked,
+                    disliked: false
+                };
+            } else {
+                // Toggle dislike, remove like if present
+                newState = {
+                    disliked: !current.disliked,
+                    liked: false
+                };
+            }
+            
+            await interactionRef.set(newState);
+            
+            // Update helpful counts
+            const helpfulRef = window.database.ref(`reviewHelpful/${appId}/${reviewId}`);
+            const helpfulSnapshot = await helpfulRef.once('value');
+            const currentHelpful = helpfulSnapshot.val() || { likes: 0, dislikes: 0 };
+            
+            let newLikes = currentHelpful.likes || 0;
+            let newDislikes = currentHelpful.dislikes || 0;
+            
+            if (type === 'like') {
+                if (newState.liked && !current.liked) {
+                    newLikes += 1;
+                } else if (!newState.liked && current.liked) {
+                    newLikes -= 1;
+                }
+                // Remove dislike if switching from dislike to like
+                if (current.disliked && !newState.disliked) {
+                    newDislikes -= 1;
+                }
+            } else {
+                if (newState.disliked && !current.disliked) {
+                    newDislikes += 1;
+                } else if (!newState.disliked && current.disliked) {
+                    newDislikes -= 1;
+                }
+                // Remove like if switching from like to dislike
+                if (current.liked && !newState.liked) {
+                    newLikes -= 1;
+                }
+            }
+            
+            await helpfulRef.set({ likes: newLikes, dislikes: newDislikes });
+            
+            // Show immediate feedback
+            if (type === 'like') {
+                showQuickFeedback(newState.liked ? 'Review liked!' : 'Like removed', 'success');
+            } else {
+                showQuickFeedback(newState.disliked ? 'Review disliked!' : 'Dislike removed', 'success');
+            }
+            
+            // Refresh the modal
+            openAppModal(appId);
+        } catch (error) {
+            console.error("Error handling review helpful:", error);
+            showAlert('Error', 'Failed to process action', 'error');
+        } finally {
+            if (helpfulBtn) helpfulBtn.classList.remove('processing');
+        }
+    }
+
+    // Download app
+    function downloadApp(appId) {
+        // Update downloads count
+        if (window.database) {
+            const appRef = window.database.ref(`apps/${appId}`);
+            appRef.transaction(app => {
+                if (app) {
+                    app.downloads = (app.downloads || 0) + 1;
+                }
+                return app;
+            });
+        }
+        
+        showAlert('Success', 'Download started! The app will be installed on your device.', 'success');
+        
+        // would redirect to actual download url
+        const app = apps.find(a => a.id === appId);
+        if (app && app.downloadUrl && app.downloadUrl !== '#') {
+            window.open(app.downloadUrl, '_blank');
+        }
+    }
+
+    // Show image preview
+    function showImagePreview(imageSrc) {
+        document.getElementById('previewedImage').src = imageSrc;
+        document.getElementById('imagePreviewModal').style.display = 'flex';
+    }
+
+    // Close image preview
+    function closeImagePreview() {
+        document.getElementById('imagePreviewModal').style.display = 'none';
+    }
+
+    // NEW: Debounced search function
+    function debounceSearch() {
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        
+        debounceTimer = setTimeout(() => {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                document.querySelector('.clear-search').style.display = 'block';
+                const filtered = apps.filter(app => 
+                    app.name.toLowerCase().includes(searchTerm) ||
+                    app.title.toLowerCase().includes(searchTerm) ||
+                    app.developer.toLowerCase().includes(searchTerm) ||
+                    (app.appcodeid && app.appcodeid.toLowerCase().includes(searchTerm))
+                );
+                displayApps(filtered);
+            } else {
+                document.querySelector('.clear-search').style.display = 'none';
+                const activeCategory = document.querySelector('.category-btn.active');
+                if (activeCategory && activeCategory.dataset.category === 'all') {
+                    displayApps(apps);
+                } else if (activeCategory) {
+                    const filtered = apps.filter(app => app.category === activeCategory.dataset.category);
+                    displayApps(filtered);
+                }
+            }
+        }, 300); // 300ms debounce delay
+    }
+
+    // Initialize app
+    function init() {
+        // Check URL for appcodeid parameter
+        checkURLForAppCode();
+        
+        // Initialize Firebase
+        initializeFirebase();
+        
+        // Load user profile
+        if (!loadUserProfile()) {
+            setTimeout(showProfileModal, 1000);
+        }
+        
+        // Load apps
+        loadApps();
+        
+        // Event Listeners
+        document.getElementById('headerAvatar').addEventListener('click', showProfileModal);
+        
+        document.getElementById('seeAllBtn').addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-category="all"]').classList.add('active');
+            displayApps(apps);
+        });
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+        
+        // Category filter
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                if (category === 'all') {
+                    displayApps(apps);
+                } else {
+                    const filtered = apps.filter(app => app.category === category);
+                    displayApps(filtered);
+                }
+            });
+        });
+        
+        // Search functionality with debounce
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.querySelector('.clear-search');
+        
+        searchInput.addEventListener('input', debounceSearch);
+        
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            const activeCategory = document.querySelector('.category-btn.active');
+            if (activeCategory && activeCategory.dataset.category === 'all') {
+                displayApps(apps);
+            } else if (activeCategory) {
+                const filtered = apps.filter(app => app.category === activeCategory.dataset.category);
+                displayApps(filtered);
+            }
+        });
+        
+        // Modal close buttons
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                }
+            });
+        });
+        
+        // Close modals on backdrop click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                }
+            });
+        });
+        
+        // Image preview close
+        document.querySelector('.close-preview').addEventListener('click', closeImagePreview);
+        document.getElementById('imagePreviewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'imagePreviewModal') {
+                closeImagePreview();
+            }
+        });
+        
+        // Profile modal functionality
+        document.getElementById('customProfilePic').addEventListener('change', handleCustomProfilePic);
+        document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+        
+        // Profile selection
+        document.getElementById('profileSelection').addEventListener('click', (e) => {
+            const profileOption = e.target.closest('.profile-option');
+            if (profileOption) {
+                document.querySelectorAll('.profile-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                profileOption.classList.add('selected');
+                currentProfilePic = profileOption.querySelector('img').src;
+            }
+        });
+        
+        // Dynamic event delegation for app cards
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // App card click
+            const appCard = target.closest('.app-card');
+            if (appCard && !target.classList.contains('app-get-btn')) {
+                openAppModal(appCard.dataset.app);
+            }
+            
+            // Get button click
+            const getBtn = target.closest('.app-get-btn');
+            if (getBtn) {
+                e.stopPropagation();
+                downloadApp(getBtn.dataset.app);
+            }
+            
+            // Download button in modal
+            const modalDownloadBtn = target.closest('.download-btn');
+            if (modalDownloadBtn && modalDownloadBtn.dataset.app && !modalDownloadBtn.dataset.action) {
+                downloadApp(modalDownloadBtn.dataset.app);
+            }
+            
+            // Today download button
+            if (target.id === 'todayDownloadBtn') {
+                downloadApp(target.dataset.app);
+            }
+            
+            // Like button for app
+            const likeBtn = target.closest('.interaction-btn.like');
+            if (likeBtn) {
+                handleAppLike(likeBtn.dataset.app);
+            }
+            
+            // Dislike button for app
+            const dislikeBtn = target.closest('.interaction-btn.dislike');
+            if (dislikeBtn) {
+                handleAppDislike(dislikeBtn.dataset.app);
+            }
+            
+            // Share button for app
+            const shareBtn = target.closest('.interaction-btn.share');
+            if (shareBtn) {
+                handleShareApp(shareBtn.dataset.app);
+            }
+            
+            // Submit review
+            const reviewBtn = target.closest('.download-btn[data-action="review"]');
+            if (reviewBtn) {
+                submitReview(reviewBtn.dataset.app);
+            }
+            
+            // Preview image click
+            if (target.classList.contains('preview-image')) {
+                showImagePreview(target.dataset.image);
+            }
+            
+            // Review helpful buttons
+            const helpfulLikeBtn = target.closest('.helpful-btn.helpful-like');
+            if (helpfulLikeBtn && currentAppDetails) {
+                const reviewId = helpfulLikeBtn.dataset.reviewId;
+                handleReviewHelpful(currentAppDetails.id, reviewId, 'like');
+            }
+            
+            const helpfulDislikeBtn = target.closest('.helpful-btn.helpful-dislike');
+            if (helpfulDislikeBtn && currentAppDetails) {
+                const reviewId = helpfulDislikeBtn.dataset.reviewId;
+                handleReviewHelpful(currentAppDetails.id, reviewId, 'dislike');
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                });
+                closeImagePreview();
+            }
+            if (e.key === '/' && e.target !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+        
+        // Initialize currentProfilePic
+        if (!currentProfilePic) {
+            currentProfilePic = PROFILE_PICTURES[0];
+        }
+    }
+
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+<script>
+// Image Protection System - Prevents image downloads
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // ========== PREVENT CONTEXT MENU ==========
+  document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'IMG' || 
+        e.target.classList.contains('protected-image-container') ||
+        e.target.closest('.protected-image-container')) {
+      e.preventDefault();
+      showWarning('copyrighted by kimi.inc');
+      return false;
+    }
+  }, false);
+  
+  // ========== PREVENT TOUCH AND HOLD ==========
+  let touchTimer;
+  let touchTarget;
+  
+  document.addEventListener('touchstart', function(e) {
+    const imgElement = e.target.closest('img');
+    if (imgElement && imgElement.classList.contains('protected-image')) {
+      touchTarget = e.target;
+      touchTimer = setTimeout(function() {
+        showWarning('Copyrighted by Kimi.inc');
+        e.preventDefault();
+      }, 500);
+    }
+  }, { passive: false });
+  
+  document.addEventListener('touchend', function() {
+    clearTimeout(touchTimer);
+  });
+  
+  document.addEventListener('touchmove', function() {
+    clearTimeout(touchTimer);
+  });
+  
+  // ========== PREVENT KEYBOARD SHORTCUTS ==========
+  document.addEventListener('keydown', function(e) {
+    // Ctrl+S or Cmd+S
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      showWarning('Saving is disabled for images');
+      return false;
+    }
+    
+    // Print Screen
+    if (e.key === 'PrintScreen') {
+      e.preventDefault();
+      showWarning('Screenshots are not permitted');
+      return false;
+    }
+    
+    // Ctrl+C or Cmd+C on images
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+      const selection = window.getSelection();
+      if (selection.toString().includes('©') || 
+          selection.anchorNode?.parentElement?.closest('.protected-image-container')) {
+        e.preventDefault();
+        showWarning('Copying image content is not allowed');
+      }
+    }
+  });
+  
+  // ========== PREVENT DRAG AND DROP ==========
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG' || 
+        e.target.classList.contains('protected-image')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // ========== BLUR IMAGE ON INSPECT ELEMENT ==========
+  let devToolsOpen = false;
+  
+  function checkDevTools() {
+    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+    
+    if ((widthThreshold || heightThreshold) && !devToolsOpen) {
+      devToolsOpen = true;
+      blurAllImages();
+      showWarning('Developer tools detected. Image protection activated.');
+    } else if (!widthThreshold && !heightThreshold && devToolsOpen) {
+      devToolsOpen = false;
+      unblurAllImages();
+    }
+  }
+  
+  setInterval(checkDevTools, 1000);
+  
+  function blurAllImages() {
+    document.querySelectorAll('.protected-image').forEach(img => {
+      img.style.filter = 'blur(20px)';
+      img.style.opacity = '0.3';
+    });
+  }
+  
+  function unblurAllImages() {
+    document.querySelectorAll('.protected-image').forEach(img => {
+      img.style.filter = 'blur(0.5px)';
+      img.style.opacity = '0.95';
+    });
+  }
+  
+  // ========== HELPER FUNCTIONS ==========
+  function showWarning(message) {
+    // Create warning element
+    const warning = document.createElement('div');
+    warning.className = 'protection-warning';
+    warning.innerHTML = `
+      <div class="warning-content">
+        <span class="warning-icon" style="color:red; font-size:20px;">
+          <i class="fas fa-warning"></i>
+        </span>
+        <p>${message}</p>
+        <button class="warning-close">×</button>
+      </div>
+    `;
+    
+    // Add styles
+    warning.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 10px;
+      background: rgba(0,0,0, 0.9);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      z-index: 9999;
+      max-width:290px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      animation: slideIn 0.3s ease;
+    `;
+    
+    const warningContent = warning.querySelector('.warning-content');
+    warningContent.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size:10px;
+    `;
+    
+    const warningClose = warning.querySelector('.warning-close');
+    warningClose.style.cssText = `
+      background: none;
+      border:1px solid;
+      border-radius:30px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 0 5px;
+    `;
+    
+    warningClose.addEventListener('click', function() {
+      warning.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => warning.remove(), 300);
+    });
+    
+    document.body.appendChild(warning);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (warning.parentNode) {
+        warning.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => warning.remove(), 300);
+      }
+    }, 1000);
+  }
+  
+  // ========== ADD ANIMATION STYLES ==========
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // ========== INITIAL WARNING ==========
+  setTimeout(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      showWarning('©Kimi.inc all rights Reserved.');
+    }
+  }, 3000);
+});
+</script>
+</body>
+</html>
