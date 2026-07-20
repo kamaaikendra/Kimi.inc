@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kimi Support</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="chat.css">
+</head>
+
+<body>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay confirm-modal" id="confirmModal">
+  <div class="modal-content">
+    <div class="confirm-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <h3 class="confirm-title" id="confirmTitle">Confirm Action</h3>
+    <p class="confirm-message" id="confirmMessage">Are you sure you want to proceed?</p>
+    <div class="confirm-actions">
+      <button class="confirm-btn cancel" id="confirmCancelBtn">Cancel</button>
+      <button class="confirm-btn confirm" id="confirmOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- FULL SCREEN IMAGE MODAL -->
+<div class="fullscreen-modal" id="fullscreenModal">
+  <img src="" alt="Full screen" class="fullscreen-image" id="fullscreenImage">
+  <button class="close-fullscreen" id="closeFullscreen">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<!-- MESSAGE POPUP -->
+<div class="message-popup" id="messagePopup">
+  <i class="popup-icon" id="popupIcon"></i>
+  <div class="popup-content">
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-message" id="popupMessage"></div>
+  </div>
+</div>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay active" id="formModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Welcome to Kimi Support</h2>
+      <p class="modal-subtitle">Fill in the pre-query form</p>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Registered Email Address</label>
+      <input type="email" class="form-input" id="emailInput" placeholder="Enter your email address" required>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Select Concern Type</label>
+      <div class="concern-options">
+        <label class="concern-option">
+          <input type="radio" name="concern" value="Deposit">
+          Deposit
+        </label>
+        <label class="concern-option">
+          <input type="radio" name="concern" value="Withdrawal">
+          Withdrawal
+        </label>
+        <label class="concern-option">
+          <input type="radio" name="concern" value="Investments">
+          Investments
+        </label>
+        <label class="concern-option">
+          <input type="radio" name="concern" value="Tournaments">
+          Tournaments
+        </label>
+        <label class="concern-option">
+          <input type="radio" name="concern" value="signup/in">
+          Signup/in
+        </label>
+        <label class="concern-option">
+          <input type="radio" name="concern" value="Other">
+          Other
+        </label>
+      </div>
+    </div>
+    
+    <button class="submit-btn" id="startChatBtn">
+      <span id="btnText">Start Chat</span>
+      <span class="loading hidden" id="btnLoading"></span>
+    </button>
+    
+    <p style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-light);">
+      By continuing, you agree to our Terms of Service and Privacy Policy
+    </p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-container hidden" id="appContainer">
+  <!-- HEADER -->
+  <div class="header">
+    <button class="back-btn" id="backBtn">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEifffG-8z1R1pNtzLOttJfZyZvbHwT54Gi_pb8aufQ0x3yGjsC9NJZGH3tu3_JDWDLEv_YqfvN6NzpoDXbCydlebRwV2p8c7glfG-8lgOL-QvQVzcr3URGygbSfUArhIA1NSxXebwDTNgouCLphxd-kn2hrnW8V3Lav2lA3xMvlShxcPq9iqwNbfSLPMxs/s16000/1000110664.gif" class="logo" alt="☺️">
+    <span class="app-name">Kimi Support</span>
+    <div class="header-actions">
+      <button class="icon-btn refresh" id="refreshBtn" title="Refresh"></button>
+      <button class="icon-btn info" id="infoBtn" title="Info"></button>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENT -->
+  <div class="announce">
+    <i class="fas fa-volume-up"></i>
+    <b>Dear User Welcome To Kimi Community!!</b>
+  </div>
+
+  <!-- CHAT CONTAINER -->
+  <div class="chat-container">
+    <div class="chat" id="chatContainer"></div>
+    
+    <!-- IMAGE PREVIEW -->
+    <div class="image-preview-container" id="imagePreviewContainer">
+      <div class="image-preview hidden" id="imagePreview">
+        <img src="" alt="Preview" class="preview-image" id="previewImage">
+        <button class="delete-preview" id="deletePreview">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- INPUT AREA CONTAINER -->
+    <div class="input-area-container" id="inputAreaContainer">
+      <div class="input-wrapper">
+        <input type="text" class="message-input" id="messageInput" placeholder="Describe Your Issue...">
+      </div>
+      <button class="action-btn addphoto" id="uploadImageBtn"></button>
+      <input type="file" class="file-input" id="imageInput" accept="image/*">
+      
+      <button class="action-btn primarysent" id="sendBtn"></button>
+    </div>
+  </div>
+</div>
+<script>
+    // ====================
+// IMPROVED SOUND SYSTEM
+// ====================
+
+// Audio Context for better performance
+let audioContext;
+let isAudioContextInitialized = false;
+
+// SFX Pool System
+const SFX_POOL_SIZE = 5; // Number of audio buffers per sound for concurrent playback
+const sfxBuffers = {};
+const sfxPool = {};
+
+// Sound URLs - UPDATED WITH EXISTING SOUNDS
+const soundUrls = {
+    click: 'https://audio.jukehost.co.uk/dJcPA33b1HQxZbNuq3SCyi9ejzBKXHJM',
+    textSent: 'https://audio.jukehost.co.uk/tMjUwMh72dCLHpwFFKA7rvO94lPtQmfu',
+    photoSent: 'https://audio.jukehost.co.uk/PYHf3UV3PYLswk1z10xJmvv08zkZ2yrO',
+    textReceive: 'https://audio.jukehost.co.uk/BCK6GD7QMUrg43ijDqpM6jRowlk0oLve',
+    photoReceive: 'https://audio.jukehost.co.uk/t7VUPlvDODGe7LbQGo2fLZo7PX1yOU9R',
+    error: 'https://audio.jukehost.co.uk/4Uj1GPG7G07rx3FJCXKbYLRopwZEvEKj',
+    success: 'https://audio.jukehost.co.uk/vUtJ3iuXKU8Z1jLmQqBw5zvPU9CsiUsW',
+    warning: 'https://audio.jukehost.co.uk/ev8tWw7FtuqIh7UZacocfiWqukpyxgeV'
+};
+
+// Fallback audio elements
+let fallbackAudioElements = {};
+
+// Initialize Audio System
+function initializeAudioSystem() {
+    try {
+        // Create Audio Context
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        isAudioContextInitialized = true;
+        
+        // Preload all sound effects
+        preloadAllSounds();
+        
+        console.log('Audio system initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize audio system:', error);
+        // Fallback to HTML5 Audio
+        initializeFallbackAudio();
+    }
+}
+
+// Fallback to HTML5 Audio if Web Audio API fails
+function initializeFallbackAudio() {
+    // Create fallback audio elements for sound effects only
+    for (const [key, url] of Object.entries(soundUrls)) {
+        if (url && !url.includes('placeholder')) {
+            fallbackAudioElements[key] = new Audio(url);
+            fallbackAudioElements[key].preload = 'auto';
+        }
+    }
+}
+
+// Preload all sound effects
+async function preloadAllSounds() {
+    if (!isAudioContextInitialized) return;
+    
+    for (const [soundName, url] of Object.entries(soundUrls)) {
+        try {
+            // Skip placeholder sounds
+            if (!url || url.includes('placeholder')) continue;
+            
+            // Fetch and decode audio
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            
+            // Store the decoded buffer
+            sfxBuffers[soundName] = audioBuffer;
+            
+            // Initialize pool for this sound
+            sfxPool[soundName] = [];
+            for (let i = 0; i < SFX_POOL_SIZE; i++) {
+                sfxPool[soundName].push({
+                    buffer: audioBuffer,
+                    source: null,
+                    lastPlayed: 0
+                });
+            }
+            
+            console.log(`Preloaded sound: ${soundName}`);
+        } catch (error) {
+            console.error(`Failed to preload sound ${soundName}:`, error);
+        }
+    }
+}
+
+// Play sound effect using pool system
+function playSound(soundName) {
+    try {
+        // Skip placeholder sounds
+        if (soundUrls[soundName] && soundUrls[soundName].includes('placeholder')) {
+            return;
+        }
+        
+        if (!isAudioContextInitialized || !sfxPool[soundName]) {
+            // Fallback to HTML5 Audio
+            playFallbackSound(soundName);
+            return;
+        }
+        
+        // Resume audio context if suspended (required by browsers)
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        // Find available sound from pool
+        const pool = sfxPool[soundName];
+        const now = Date.now();
+        
+        // Try to find a sound that's not currently playing
+        for (const sound of pool) {
+            if (!sound.source || sound.source.playbackState === sound.source.FINISHED) {
+                playSoundFromPool(sound);
+                return;
+            }
+        }
+        
+        // If all sounds are playing, use the one that was played least recently
+        let oldestSound = pool[0];
+        for (const sound of pool) {
+            if (sound.lastPlayed < oldestSound.lastPlayed) {
+                oldestSound = sound;
+            }
+        }
+        
+        playSoundFromPool(oldestSound);
+        
+    } catch (error) {
+        console.error('Error playing sound:', error);
+        playFallbackSound(soundName);
+    }
+}
+
+function playSoundFromPool(sound) {
+    sound.source = audioContext.createBufferSource();
+    sound.source.buffer = sound.buffer;
+    sound.source.connect(audioContext.destination);
+    sound.source.start(0);
+    sound.lastPlayed = Date.now();
+    
+    // Clean up when sound finishes
+    sound.source.onended = () => {
+        sound.source = null;
+    };
+}
+
+// Fallback sound playback
+function playFallbackSound(soundName) {
+    try {
+        const audio = fallbackAudioElements[soundName];
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log('Fallback audio play failed:', e));
+        }
+    } catch (error) {
+        console.error('Fallback sound error:', error);
+    }
+}
+
+// Initialize audio system
+initializeAudioSystem();
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAZ-znvqufe3kTB_sPxQUiOdmbjXm00D8c",
+  authDomain: "customerchat-88407.firebaseapp.com",
+  databaseURL: "https://customerchat-88407-default-rtdb.firebaseio.com",
+  projectId: "customerchat-88407",
+  storageBucket: "customerchat-88407.firebasestorage.app",
+  messagingSenderId: "1094190373370",
+  appId: "1:1094190373370:web:9ef8834bb5c1d7f84c2c43",
+  measurementId: "G-H4ZZTQQ2W9"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// Play sound function with error handling (now using the new system)
+function playSoundLegacy(soundName) {
+    playSound(soundName);
+}
+
+// Enhanced showMessage function with sounds
+function showMessage(type, title, message, duration = 3000) {
+  // Reset classes
+  messagePopup.className = 'message-popup';
+  
+  // Set type-specific styling
+  messagePopup.classList.add(`popup-${type}`);
+  messagePopup.classList.add('show');
+  
+  // Set content
+  popupTitle.textContent = title;
+  popupMessage.textContent = message;
+  
+  // Set icon based on type
+  let iconClass = 'fas fa-info-circle';
+  switch(type) {
+    case 'success': 
+      iconClass = 'fas fa-check-circle';
+      playSound('success');
+      break;
+    case 'error': 
+      iconClass = 'fas fa-exclamation-circle';
+      playSound('error');
+      break;
+    case 'warning': 
+      iconClass = 'fas fa-exclamation-triangle';
+      playSound('warning');
+      break;
+    case 'info': 
+      iconClass = 'fas fa-info-circle';
+      break;
+  }
+  popupIcon.className = iconClass;
+  
+  // Auto hide after duration
+  setTimeout(() => {
+    messagePopup.classList.remove('show');
+  }, duration);
+}
+
+// App State
+let currentUserEmail = "";
+let currentUserKey = "";
+let currentConcern = "";
+let isAdminConnected = false;
+let selectedImageFile = null;
+let selectedImageBase64 = null;
+let confirmPromiseResolve = null;
+
+// DOM Elements
+const formModal = document.getElementById('formModal');
+const appContainer = document.getElementById('appContainer');
+const emailInput = document.getElementById('emailInput');
+const startChatBtn = document.getElementById('startChatBtn');
+const chatContainer = document.getElementById('chatContainer');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const imageInput = document.getElementById('imageInput');
+const uploadImageBtn = document.getElementById('uploadImageBtn');
+const backBtn = document.getElementById('backBtn');
+const refreshBtn = document.getElementById('refreshBtn');
+const infoBtn = document.getElementById('infoBtn');
+const messagePopup = document.getElementById('messagePopup');
+const popupTitle = document.getElementById('popupTitle');
+const popupMessage = document.getElementById('popupMessage');
+const popupIcon = document.getElementById('popupIcon');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const imagePreview = document.getElementById('imagePreview');
+const previewImage = document.getElementById('previewImage');
+const deletePreview = document.getElementById('deletePreview');
+const fullscreenModal = document.getElementById('fullscreenModal');
+const fullscreenImage = document.getElementById('fullscreenImage');
+const closeFullscreen = document.getElementById('closeFullscreen');
+
+// Confirmation Modal Elements
+const confirmModal = document.getElementById('confirmModal');
+const confirmTitle = document.getElementById('confirmTitle');
+const confirmMessage = document.getElementById('confirmMessage');
+const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+const confirmOkBtn = document.getElementById('confirmOkBtn');
+
+// Add click sound to all buttons
+function addClickSoundToButtons() {
+  // Form buttons
+  startChatBtn.addEventListener('click', () => playSound('click'));
+  confirmCancelBtn.addEventListener('click', () => playSound('click'));
+  confirmOkBtn.addEventListener('click', () => playSound('click'));
+  
+  // Header buttons
+  backBtn.addEventListener('click', () => playSound('click'));
+  refreshBtn.addEventListener('click', () => playSound('click'));
+  infoBtn.addEventListener('click', () => playSound('click'));
+  
+  // Chat buttons
+  sendBtn.addEventListener('click', () => playSound('click'));
+  uploadImageBtn.addEventListener('click', () => playSound('click'));
+  deletePreview.addEventListener('click', () => playSound('click'));
+  closeFullscreen.addEventListener('click', () => playSound('click'));
+  
+  // Add click sound to concern options
+  const concernOptions = document.querySelectorAll('.concern-option');
+  concernOptions.forEach(option => {
+    option.addEventListener('click', () => playSound('click'));
+  });
+}
+
+// Custom confirmation dialog
+function showConfirm(title, message) {
+  return new Promise((resolve) => {
+    confirmPromiseResolve = resolve;
+    confirmTitle.textContent = title;
+    confirmMessage.textContent = message;
+    confirmModal.classList.add('active');
+  });
+}
+
+// Validate email format
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Generate a unique key from email
+function generateUserKey(email) {
+  // Simple hash function to create a consistent key from email
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) {
+    hash = ((hash << 5) - hash) + email.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return 'user_' + Math.abs(hash).toString(16);
+}
+
+// Start chat session
+async function startChat() {
+  playSound('click');
+  
+  const email = emailInput.value.trim();
+  const concernRadio = document.querySelector('input[name="concern"]:checked');
+  
+  if (!email) {
+    showMessage('error', 'Email Required', 'Please enter your email address');
+    emailInput.focus();
+    return;
+  }
+  
+  if (!isValidEmail(email)) {
+    showMessage('error', 'Invalid Email', 'Please enter a valid email address');
+    emailInput.focus();
+    return;
+  }
+  
+  if (!concernRadio) {
+    showMessage('error', 'Concern Required', 'Please select a concern type');
+    return;
+  }
+  
+  // Show loading state
+  startChatBtn.disabled = true;
+  document.getElementById('btnText').classList.add('hidden');
+  document.getElementById('btnLoading').classList.remove('hidden');
+  
+  try {
+    // Generate user key from email
+    currentUserEmail = email;
+    currentUserKey = generateUserKey(email);
+    currentConcern = concernRadio.value;
+    
+    // Create or get user session in Firebase
+    const userRef = database.ref(`users/${currentUserKey}`);
+    const snapshot = await userRef.once('value');
+    
+    if (!snapshot.exists()) {
+      // New user - create session
+      await userRef.set({
+        email: currentUserEmail,
+        concern: currentConcern,
+        createdAt: Date.now(),
+        lastActive: Date.now()
+      });
+      
+      showMessage('success', 'Welcome!', 'Your chat session has been created');
+    } else {
+      // Existing user - update last active
+      await userRef.update({
+        lastActive: Date.now(),
+        concern: currentConcern
+      });
+      
+      showMessage('success', 'Welcome Back!', 'Continuing from your previous chat session');
+    }
+    
+    // Hide modal and show app
+    formModal.classList.remove('active');
+    setTimeout(() => {
+      formModal.classList.add('hidden');
+      appContainer.classList.remove('hidden');
+      
+      // Load messages
+      loadMessages();
+      
+      // Send welcome message if new session
+      if (!snapshot.exists()) {
+        setTimeout(() => {
+          sendSystemMessage("Hello! Welcome to Kimi Support. How can I assist you today? Our team is available 24/7 to help with your '" + currentConcern + "' concern.");
+        }, 1000);
+      }
+    }, 300);
+    
+  } catch (error) {
+    console.error('Error starting chat:', error);
+    showMessage('error', 'Connection Error', 'Unable to start chat. Please try again.');
+  } finally {
+    // Reset button state
+    startChatBtn.disabled = false;
+    document.getElementById('btnText').classList.remove('hidden');
+    document.getElementById('btnLoading').classList.add('hidden');
+  }
+}
+
+// Send system message
+function sendSystemMessage(text) {
+  const messagesRef = database.ref(`chats/${currentUserKey}/messages`);
+  messagesRef.push({
+    sender: 'admin',
+    type: 'text',
+    content: text,
+    timestamp: Date.now()
+  });
+}
+
+// Send user message
+async function sendMessage() {
+  playSound('');
+  
+  const message = messageInput.value.trim();
+  
+  // Check if we have an image to send
+  if (selectedImageBase64) {
+    try {
+      const messagesRef = database.ref(`chats/${currentUserKey}/messages`);
+      await messagesRef.push({
+        sender: 'user',
+        type: 'image',
+        content: selectedImageBase64,
+        filename: selectedImageFile.name,
+        size: selectedImageFile.size,
+        timestamp: Date.now()
+      });
+      
+      playSound('photoSent');
+      showMessage('success', 'Image Sent', 'Image has been sent successfully');
+      
+      // Clear image preview
+      clearImagePreview();
+      
+    } catch (error) {
+      console.error('Error sending image:', error);
+      showMessage('error', 'Send Failed', 'Unable to send image. Please try again.');
+      return;
+    }
+  } 
+  // Send text message
+  else if (message) {
+    // Clear input
+    messageInput.value = '';
+    
+    try {
+      const messagesRef = database.ref(`chats/${currentUserKey}/messages`);
+      await messagesRef.push({
+        sender: 'user',
+        type: 'text',
+        content: message,
+        timestamp: Date.now()
+      });
+      
+      playSound('textSent');
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      showMessage('error', 'Send Failed', 'Unable to send message. Please try again.');
+      return;
+    }
+  } else {
+    showMessage('warning', 'Empty Message', 'Please type a message or select an image');
+    messageInput.focus();
+    return;
+  }
+  
+  // Update user last active
+  try {
+    database.ref(`users/${currentUserKey}`).update({
+      lastActive: Date.now()
+    });
+  } catch (error) {
+    console.error('Error updating last active:', error);
+  }
+}
+
+// Handle image upload and preview
+function handleImageUpload(file) {
+  // Validate file size (5MB max)
+  const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  if (file.size > maxSize) {
+    showMessage('error', 'File Too Large', 'Image size must be less than 5MB');
+    return;
+  }
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showMessage('error', 'Invalid File', 'Please select an image file (JPEG, PNG, GIF, etc.)');
+    return;
+  }
+  
+  // Read file as data URL (base64)
+  const reader = new FileReader();
+  
+  reader.onload = function(e) {
+    selectedImageFile = file;
+    selectedImageBase64 = e.target.result;
+    
+    // Show preview
+    previewImage.src = selectedImageBase64;
+    imagePreview.classList.remove('hidden');
+    
+    // Clear text input
+    messageInput.value = '';
+    messageInput.placeholder = 'Click send button to send image';
+    
+    showMessage('success', 'Image Selected', 'Image ready to send. Click the send button.');
+  };
+  
+  reader.onerror = function() {
+    showMessage('error', 'Upload Error', 'Failed to read image file');
+  };
+  
+  reader.readAsDataURL(file);
+  imageInput.value = ''; // Reset input
+}
+
+// Clear image preview
+function clearImagePreview() {
+  selectedImageFile = null;
+  selectedImageBase64 = null;
+  imagePreview.classList.add('hidden');
+  previewImage.src = '';
+  messageInput.placeholder = 'Type your message...';
+}
+
+// Load messages
+function loadMessages() {
+  const messagesRef = database.ref(`chats/${currentUserKey}/messages`);
+  
+  // Clear existing messages
+  chatContainer.innerHTML = '';
+  
+  // Add date separator
+  const today = new Date().toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'chat-date';
+  dateDiv.textContent = today;
+  chatContainer.appendChild(dateDiv);
+  
+  // Listen for new messages
+  messagesRef.on('child_added', (snapshot) => {
+    const message = snapshot.val();
+    renderMessage(message);
+    
+    // Play receive sounds for incoming messages
+    if (message.sender === 'admin') {
+      if (message.type === 'image') {
+        playSound('photoReceive');
+      } else {
+        playSound('textReceive');
+      }
+    }
+  });
+}
+
+// Render a message
+function renderMessage(message) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${message.sender}`;
+  
+  // Format time
+  const time = new Date(message.timestamp).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  if (message.type === 'image') {
+    messageDiv.innerHTML = `
+      <div>📎</div>
+      <img src="${message.content}" class="message-image" alt="Sent image" data-fullscreen="${message.content}">
+      <div class="message-time">${time}</div>
+    `;
+    
+    // Add click event to image for fullscreen
+    const imgElement = messageDiv.querySelector('.message-image');
+    imgElement.addEventListener('click', () => {
+      fullscreenImage.src = message.content;
+      fullscreenModal.classList.add('active');
+      playSound('click');
+    });
+    
+  } else {
+    messageDiv.innerHTML = `
+      <div>${message.content}</div>
+      <div class="message-time">${time}</div>
+    `;
+  }
+  
+  chatContainer.appendChild(messageDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Initialize concern options
+function initConcernOptions() {
+  const options = document.querySelectorAll('.concern-option');
+  options.forEach(option => {
+    const radio = option.querySelector('input[type="radio"]');
+    
+    option.addEventListener('click', () => {
+      options.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      radio.checked = true;
+    });
+    
+    if (radio.checked) {
+      option.classList.add('active');
+    }
+  });
+}
+
+// Event Listeners
+startChatBtn.addEventListener('click', startChat);
+
+emailInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') startChat();
+});
+
+messageInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+sendBtn.addEventListener('click', sendMessage);
+
+uploadImageBtn.addEventListener('click', () => {
+  imageInput.click();
+});
+
+imageInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) handleImageUpload(file);
+});
+
+deletePreview.addEventListener('click', clearImagePreview);
+
+closeFullscreen.addEventListener('click', () => {
+  fullscreenModal.classList.remove('active');
+});
+
+// Close fullscreen modal when clicking outside image
+fullscreenModal.addEventListener('click', (e) => {
+  if (e.target === fullscreenModal) {
+    fullscreenModal.classList.remove('active');
+  }
+});
+
+backBtn.addEventListener('click', async () => {
+  // Show custom confirmation modal
+  const confirmed = await showConfirm('End Chat Session', 'Are you sure you want to end this chat session?');
+  
+  if (confirmed) {
+    appContainer.classList.add('hidden');
+    formModal.classList.remove('hidden');
+    setTimeout(() => {
+      formModal.classList.add('active');
+      // Reset form
+      emailInput.value = '';
+      document.querySelectorAll('input[name="concern"]').forEach(radio => {
+        radio.checked = false;
+      });
+      initConcernOptions();
+    }, 50);
+  }
+});
+
+refreshBtn.addEventListener('click', () => {
+  // Add spinning class to trigger animation
+  refreshBtn.classList.add('spinning');
+  
+  // Load messages
+  loadMessages();
+  showMessage('info', 'Refreshing', 'Refreshing chat messages...');
+  
+  // Remove spinning class after animation completes to allow re-triggering
+  setTimeout(() => {
+    refreshBtn.classList.remove('spinning');
+  }, 3000);
+});
+
+infoBtn.addEventListener('click', () => {
+  showMessage('info', 'Support Information', 
+    'Kimi Support\nAvailable 24/7\nEmail: kimiapi92@gmail.com\nResponse Time: Usually within minutes', 
+    5000);
+});
+
+// Confirmation modal event listeners
+confirmCancelBtn.addEventListener('click', () => {
+  confirmModal.classList.remove('active');
+  if (confirmPromiseResolve) {
+    confirmPromiseResolve(false);
+    confirmPromiseResolve = null;
+  }
+});
+
+confirmOkBtn.addEventListener('click', () => {
+  confirmModal.classList.remove('active');
+  if (confirmPromiseResolve) {
+    confirmPromiseResolve(true);
+    confirmPromiseResolve = null;
+  }
+});
+
+// Close confirmation modal when clicking outside
+confirmModal.addEventListener('click', (e) => {
+  if (e.target === confirmModal) {
+    confirmModal.classList.remove('active');
+    if (confirmPromiseResolve) {
+      confirmPromiseResolve(false);
+      confirmPromiseResolve = null;
+    }
+  }
+});
+
+// Initialize the app
+function initApp() {
+  initConcernOptions();
+  addClickSoundToButtons();
+  
+  // Auto-show modal on load
+  setTimeout(() => {
+    formModal.classList.add('active');
+  }, 100);
+  
+  // Show welcome message
+  setTimeout(() => {
+    showMessage('info', 'Welcome', 'Please fill in the form to start chatting', 4000);
+  }, 1500);
+}
+
+// Start the app
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
