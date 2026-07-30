@@ -105,8 +105,8 @@
 
     .auth-logo {
       width: 200px;
-      height: 100px;
-      background:url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiP1ENFg-1ShM1q4SR_RbnWof5uldC6872TAiuwRa46blHf71EThUwz-tmYsOVRPDGxlzuwEykVgDnuCtwAMhdqPobikf1bM4hYh_oeDWj5_jAnWfLnmRihIg3wfytU5yU01ohEZvkagNy7pl2ZqDFVn7VkC1sJJzzs8SZGXWOOeuU-RDZj9Q2HuCKRhEM/s16000/1000116821.png');
+      height: 180px;
+      background:url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEYNZ5qyBsSYJye4WMUQENdMA3y6zqFMsGYuy5ZCBeWOenKWHoQ7Ld_ofANDo6XUsAwO9CVMnqhQFhaGZSo9AR8wJg1exYEZlhiRXL4B4vVD54yh9d05MESFvyMUSTnCv-hm-VZX7fzZVqpmJohF_yvy7JfNjbwDZkn5uln_XY_c5Fpyc6RfBNShpCdFY/s16000/1000095879.png');
       border-radius: 0%;
       display: flex;
       justify-content: center;
@@ -203,6 +203,7 @@
     }
     .auth-form{
         background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(5px);
         padding:5px;
         padding-top: 15px;
         border-radius: 8px;
