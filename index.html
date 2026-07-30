@@ -201,8 +201,8 @@ fab.addEventListener('touchstart', (e) => {
         height: 100%;
         background: linear-gradient(
           180deg,
-          #5539CC 50%,
-          #FDBD01 100%
+          #5539CC 20%,
+          #FF3333 100%
         );
         background-size: 100% 100%;
         display: flex;
@@ -247,9 +247,10 @@ fab.addEventListener('touchstart', (e) => {
         overflow: hidden;
         position: fixed;
         bottom:10%;
-        border:1px solid #fdbd01;
-        border-bottom: 2px solid #fdbd01;
-        border-top: 2px solid #fdbd01;
+        border:1px solid #ff3333;
+        border-bottom: 2px solid #ff3333;
+        border-top: 2px solid #ff3333;
+        outline:.51px solid #fdbd01;
         pointer-events: auto;
       }
 
@@ -768,7 +769,7 @@ fab.addEventListener('touchstart', (e) => {
           </div>
           <div class="help-faq-item">
             <strong> How much bonus will I get?</strong>
-            <p>New users get ₹1–100 randomly, Fixed ₹15 if you use a referral code.</p>
+            <p>New users get ₹9–99 randomly, Fixed ₹50 if you use a referral code.</p>
           </div>
           <div class="help-faq-item">
             <strong> Where is my money?</strong>
@@ -799,13 +800,11 @@ const firebaseConfig = {
 };
 
 const REDIRECT_URL = "home.html";
-// UPDATED: Fixed referral rewards
-const NEW_USER_REFERRAL_BONUS = 50; // 50 rupees for new user who uses referral code
-const REFERRER_REWARD = 50; // 50 rupees for referrer
+const NEW_USER_REFERRAL_BONUS = 50; 
+const REFERRER_MISSION_REWARD = 50; 
 
-// NEW: Signup bonus range for users WITHOUT referral code
-const SIGNUP_BONUS_MIN = 5; // Minimum signup bonus
-const SIGNUP_BONUS_MAX = 100; // Maximum signup bonus
+const SIGNUP_BONUS_MIN = 9; 
+const SIGNUP_BONUS_MAX = 99; 
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -1323,20 +1322,20 @@ async function generateAndAssignUniqueReferralCode(user) {
                         bankName: "",
                         ifscCode: ""
                     },
-                    totalBalance: 0, // Set to 0 initially - no bonus added yet
-                    withdrawableBalance: 0, // Set to 0 initially - no tranxn yet
+                    totalBalance: 0, 
+                    withdrawableBalance: 0, 
                     depositHistory: {},
                     withdrawalHistory: {},
                     Referrals: {},
                     referralEarnings: 0,
                     notifications: {},
-                    transactionRecords: {}, // Empty - no transactions yet
-                    history: {}, // Empty - no history yet
+                    transactionRecords: {}, 
+                    history: {}, 
                     createdAt: timestamp,
                     lastLogin: timestamp,
                     hasUsedReferral: false,
                     hasReceivedSignupBonus: false,
-                    pendingSignupBonusAmount: 0, // Will be set later
+                    pendingSignupBonusAmount: 0, 
                     emailVerified: user.emailVerified || false
                 };
 
@@ -1350,7 +1349,6 @@ async function generateAndAssignUniqueReferralCode(user) {
                 console.log("Unique referral code assigned:", referralCode);
                 return referralCode;
             }
-            // If code exists, loop will continue and generate new code
         } catch (error) {
             console.error("Error checking/assigning referral code:", error);
             throw error;
@@ -1360,7 +1358,7 @@ async function generateAndAssignUniqueReferralCode(user) {
     throw new Error("Failed to generate unique referral code after " + maxAttempts + " attempts");
 }
 
-// Function to save transaction record (used ONLY when user claims bonus)
+// Function to save transaction record
 function saveTransactionRecord(userId, type, amount, balanceAfter, description, transactionName, isIncome = true) {
     const transactionId = transactionIDGen.generateIncomeID();
     const timestamp = Date.now();
@@ -1377,7 +1375,6 @@ function saveTransactionRecord(userId, type, amount, balanceAfter, description, 
         transactionType: isIncome ? 'added' : 'deducted'
     };
     
-    // Return the update path
     const recordKey = `transaction_${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
     return {
         path: `appusers/${userId}/transactionRecords/${recordKey}`,
@@ -1385,35 +1382,28 @@ function saveTransactionRecord(userId, type, amount, balanceAfter, description, 
     };
 }
 
-// Process verified user for bonus (determine bonus amount)
+// Process verified user for bonus 
 async function processVerifiedUserForBonus(user) {
     try {
         const userId = user.uid;
         
-        // Check if user has already received signup bonus
         const snapshot = await database.ref('appusers/' + userId + '/hasReceivedSignupBonus').once('value');
         
         if (snapshot.exists() && snapshot.val() === true) {
-            // User already received bonus
             return 0;
         }
         
-        // Check for referral code
         const referralCode = pendingSignupData?.referralCode;
         
         if (referralCode && referralCode.length === 10) {
-            // Process referral code and award rewards
-            // UPDATED: Process referrer's transaction immediately, but NOT new user's transaction
             const result = await processSignupReferralCode(userId, referralCode);
             return result.bonusAmount;
         } else {
-            // No referral code, give random signup bonus
             const randomBonus = generateRandomSignupBonus();
             return randomBonus;
         }
     } catch (error) {
         console.error("Error in processVerifiedUserForBonus:", error);
-        // Return minimum bonus on error
         return SIGNUP_BONUS_MIN;
     }
 }
@@ -1424,33 +1414,28 @@ function generateRandomSignupBonus() {
     return parseFloat(randomAmount);
 }
 
-// Process referral code from signup form - UPDATED: Only process referrer's transaction, NOT new user's
+// Process referral code from signup form 
 async function processSignupReferralCode(userId, referralCode) {
     if (!referralCode || referralCode.length !== 10 || !/^[A-Z0-9]+$/.test(referralCode)) {
-        // Invalid referral code, award random signup bonus
         const randomBonus = generateRandomSignupBonus();
         return { bonusAmount: randomBonus, isReferral: false };
     }
     
     try {
-        // Check if referral code exists
         const snapshot = await database.ref('referralCodes/' + referralCode).once('value');
         
         if (!snapshot.exists()) {
-            // Invalid referral code
             const randomBonus = generateRandomSignupBonus();
             return { bonusAmount: randomBonus, isReferral: false };
         }
         
         const refereeId = snapshot.val();
         
-        // Check if user is trying to use their own referral code
         if (refereeId === userId) {
             const randomBonus = generateRandomSignupBonus();
             return { bonusAmount: randomBonus, isReferral: false };
         }
         
-        // Check if user has already used a referral code
         const hasUsedSnapshot = await database.ref(`appusers/${userId}/hasUsedReferral`).once('value');
         if (hasUsedSnapshot.exists() && hasUsedSnapshot.val() === true) {
             const randomBonus = generateRandomSignupBonus();
@@ -1460,72 +1445,32 @@ async function processSignupReferralCode(userId, referralCode) {
         const timestamp = Date.now();
         const updates = {};
 
-        // Get current balance for referrer
-        const refereeBalanceSnapshot = await database.ref(`appusers/${refereeId}/totalBalance`).once('value');
-        const refereeCurrentBalance = refereeBalanceSnapshot.exists() ? Number(refereeBalanceSnapshot.val()) : 0;
-        const refereeBalanceAfter = refereeCurrentBalance + REFERRER_REWARD;
-
-        // Generate transaction record for referrer earning referral - PROCESS REFERRER IMMEDIATELY
-        const referrerTransaction = saveTransactionRecord(
-            refereeId,
-            'referral_earned',
-            REFERRER_REWARD,
-            refereeBalanceAfter,
-            `Referral earnings from new user signup (Code: ${referralCode})`,
-            'Referral Earnings',
-            true
-        );
-
-        // Mark that new user has used a referral code
-        // BUT DO NOT CREATE ANY TRANSACTION OR ADD BALANCE FOR NEW USER YET
         updates[`appusers/${userId}/hasUsedReferral`] = true;
         updates[`appusers/${userId}/referredVia`] = referralCode;
-        // DON'T set hasReceivedSignupBonus here - user needs to claim it
-        // DON'T update withdrawableBalance or totalBalance for new user here
-        // DON'T create transaction record for new user here
-        // DON'T add history for new user here
         
-        // Update referrer's data - PROCESS REFERRER IMMEDIATELY
-        updates[`appusers/${refereeId}/referralEarnings`] = firebase.database.ServerValue.increment(REFERRER_REWARD);
-        updates[`appusers/${refereeId}/withdrawableBalance`] = firebase.database.ServerValue.increment(REFERRER_REWARD);
-        updates[`appusers/${refereeId}/totalBalance`] = firebase.database.ServerValue.increment(REFERRER_REWARD);
-        
-        // Add referral to referrer's Referrals list
+        // Registering the Referral under Inviter in pending_mission state
         updates[`appusers/${refereeId}/Referrals/${userId}`] = {
             email: auth.currentUser?.email || "Guest Account",
             timestamp: timestamp,
-            status: 'active',
-            earned: REFERRER_REWARD,
+            status: 'pending_mission',
+            earned: 0,
+            pendingCommission: 0,
+            collectedCommission: 0,
             code: referralCode,
-            transactionId: referrerTransaction.value.transactionId
+            missionCompleted: false,
+            totalDeposit: 0,
+            totalInvestments: 0,
+            loginDays: 1
         };
         
-        // Add history for referrer
-        const referrerHistoryKey = `ref_earned_${timestamp}`;
-        updates[`appusers/${refereeId}/history/${referrerHistoryKey}`] = {
-            type: 'referral_earned',
-            from: userId,
-            to: refereeId,
-            code: referralCode,
-            amount: REFERRER_REWARD,
-            timestamp: timestamp,
-            description: `Referral earnings from new user (Code used: ${referralCode})`,
-            transactionId: referrerTransaction.value.transactionId
-        };
-        
-        // Add transaction record for referrer
-        updates[referrerTransaction.path] = referrerTransaction.value;
-
         await database.ref().update(updates);
         
-        console.log(`Referral processed: ${refereeId} earned ₹${REFERRER_REWARD} from ${userId}. ${userId}'s ₹${NEW_USER_REFERRAL_BONUS} is pending until claim.`);
+        console.log(`Referral processed: ${userId} registered under ${refereeId}. Referee will earn reward upon mission completion.`);
         
-        // Return the bonus amount for new user (to be claimed later)
         return { bonusAmount: NEW_USER_REFERRAL_BONUS, isReferral: true, refereeId: refereeId };
         
     } catch (error) {
         console.error("Error processing referral:", error);
-        // On error, give random bonus
         const randomBonus = generateRandomSignupBonus();
         return { bonusAmount: randomBonus, isReferral: false };
     }
@@ -1551,27 +1496,27 @@ async function createUserData(user) {
 
     const userData = {
         email: email,
-        referralCode: "", // Will be set after verification
+        referralCode: "", 
         BankDetails: {
             accountNumber: "",
             accountName: "",
             bankName: "",
             ifscCode: ""
         },
-        totalBalance: 0, // Start with 0 - no bonus yet
-        withdrawableBalance: 0, // Start with 0 - no bonus yet
+        totalBalance: 0, 
+        withdrawableBalance: 0, 
         depositHistory: {},
         withdrawalHistory: {},
         Referrals: {},
         referralEarnings: 0,
         notifications: {},
-        transactionRecords: {}, // Empty - no transactions yet
-        history: {}, // Empty - no history yet
+        transactionRecords: {}, 
+        history: {}, 
         createdAt: timestamp,
         lastLogin: timestamp,
         hasUsedReferral: false,
         hasReceivedSignupBonus: false,
-        pendingSignupBonusAmount: 0, // Will be set after verification
+        pendingSignupBonusAmount: 0, 
         emailVerified: user.emailVerified || false
     };
 
@@ -1748,18 +1693,15 @@ function redirectAfterLogin(user, method) {
         }
     }
     
-    // Check if user has claimed signup bonus
     database.ref('appusers/' + user.uid + '/hasReceivedSignupBonus').once('value')
         .then(snapshot => {
             const hasReceivedSignupBonus = snapshot.exists() ? snapshot.val() : false;
             
             if (!hasReceivedSignupBonus) {
-                // User hasn't claimed bonus, check for pending bonus
                 return database.ref('appusers/' + user.uid + '/pendingSignupBonusAmount').once('value')
                     .then(bonusSnapshot => {
                         if (bonusSnapshot.exists() && !hasShownSignupBonusModal && !isRedirecting) {
                             pendingSignupBonusAmount = bonusSnapshot.val();
-                            // Sort out invalid bonus instantly
                             if (pendingSignupBonusAmount < 1) {
                                 database.ref('appusers/' + user.uid).update({
                                     hasReceivedSignupBonus: true,
@@ -1772,14 +1714,12 @@ function redirectAfterLogin(user, method) {
                                 showSignupBonusModal(pendingSignupBonusAmount);
                             }
                         } else if (!bonusSnapshot.exists() && !isRedirecting) {
-                            // No pending bonus, proceed with normal login
                             completeLoginRedirect(user, method, spinnerId);
                         } else {
                             document.getElementById(spinnerId).style.display = 'none';
                         }
                     });
             } else {
-                // User has claimed bonus, proceed with normal login
                 completeLoginRedirect(user, method, spinnerId);
             }
         })
@@ -1796,7 +1736,6 @@ function completeLoginRedirect(user, method, spinnerId) {
     ensureUserExists(user)
         .then(() => {
             showToast(`Welcome ${user.email || 'Dear Guest'}!`, 'success');
-            // Instant redirect
             window.location.replace(REDIRECT_URL);
         })
         .catch(error => {
@@ -1835,14 +1774,12 @@ function signUp() {
     
     document.getElementById('signupSpinner').style.display = 'block';
     
-    // Store referral code for later processing after verification
     pendingSignupData = {
         referralCode: referralCode
     };
     
     auth.createUserWithEmailAndPassword(email, password)
         .then(result => {
-            // Create initial user data without referral code
             return createUserData(result.user)
                 .then(() => {
                     return result.user.sendEmailVerification();
@@ -1853,7 +1790,6 @@ function signUp() {
                     document.getElementById('signupSpinner').style.display = 'none';
                     showToast("Verification email sent! Please check your inbox.", 'success');
                     
-                    // Clear form
                     document.getElementById('signupEmail').value = '';
                     document.getElementById('signupPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
