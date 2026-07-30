@@ -94,8 +94,9 @@
         inset 0 -3px 6px rgba(0, 0, 0, 0.4);
         }
         .plan-badge { position: absolute; top: 0; right: 0; background:linear-gradient(80deg, rgba(70,0,159,0.99), rgba(0,56,178,0.99)); color: white; padding: 6px 18px; font-size: 13px; font-weight: 700; border-bottom-left-radius: 18px; border-top-right-radius: 18px; }
-        .card-top { display: flex; gap: 15px; margin-bottom: 15px; }
-        .card-image-wrapper { position: relative; flex-shrink: 0; }
+        .limited-badge { position: absolute; top: 0; left: 0; background: linear-gradient(80deg, #e11d48, #f43f5e); color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-bottom-right-radius: 12px; border-top-left-radius: 18px; }
+        .card-top { display: flex; gap: 15px; margin-bottom: 15px; margin-top: 10px; }
+        .card-image-wrapper { position: relative; flex-shrink: 0; width: 60px; height: 60px; }
         .product-logo-img { width: 100%; height: 60px; object-fit: contain; border-radius: 0px; display: flex; align-items: center; justify-content: center; background:white; padding: 0px; }
         .product-logo-img.error-fallback { content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%238e54e9"/><text x="50" y="55" font-size="12" text-anchor="middle" fill="white" font-weight="bold">Logo</text></svg>'); }
         .card-info { flex: 1; padding-top: 5px; }
@@ -129,16 +130,13 @@
             width: 280px; 
             height: 100vh;
       background: 
-    /* Radial gradient on top */
     radial-gradient(
       circle at center,
       rgba(125, 44, 155, 0.99),
       rgba(128, 11, 155, 0.99)
     ),
-    /* Background image underneath */
-    url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');  background-blend-mode: overlay; /* Optional: blends the layers */
+    url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');  background-blend-mode: overlay;
   background-size: 100% 100%;
-  background-blend-mode: overlay;
       border: 1px solid black;
       box-shadow:
         inset 0 3px 6px rgba(255, 255, 255, 0.8),
@@ -170,7 +168,16 @@
         .balance-amt { font-size: 15px; font-weight: 900; color: #fdbd01; }
         .action-btn { background: linear-gradient(90deg, #FFA600 0%, #fdbd01 50%, #FFA600 100%); color: #310c49; font-weight: 900; padding: 4px 0; border-radius: 6px; font-size: 13px; cursor: pointer; text-transform: capitalize; margin-top: 5px; border:1px solid rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 2px 0 rgba(255,255,255,0.2); transition: transform 0.1s; }
         .action-btn2 { background: linear-gradient(90deg, #468c00 0%, #74bc14 50%, #468c00 100%); color: #310c49; font-weight: 900; padding: 4px 0; border-radius: 6px; font-size: 13px; cursor: pointer; text-transform: capitalize; margin-top: 5px; border:1px solid rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 2px 0 rgba(255,255,255,0.2); transition: transform 0.1s; }
+        .action-btn:active{
+            transform:scale(0.95);
+        }
+        .action-btn2:active{
+            transform:scale(0.95);
+        }
         .vip-banner { background-color: #210235; border-radius: 12px; border:1px solid rgba(265,128,0,1); box-shadow: 0 1px 1px rgba(0,0,0,0.4), inset 0 2px 2px 2px rgba(255,255,255,0.2); padding: 8px 10px; display: flex; align-items: center; gap: 10px; position: relative; cursor: pointer; }
+        .vip-banner:active{
+            transform:scale(0.95);
+        }
         .vip-icon { width: 50px; height: 50px; object-fit: contain; }
         .vip-progress-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .vip-level-text { color: #fdbd01; font-size: 20px; font-weight: 900; }
@@ -189,6 +196,9 @@
         .apk-banner { background-color: #210235; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
         .apk-banner h3 { color: #fdbd01; font-size: 13px; margin-bottom: 6px; }
         .download-btn { background: linear-gradient(180deg, #fceb9c, #d19a22); border: none; padding: 5px 10px; border-radius: 4px; color: #3b1154; font-weight: 900; font-size: 12px; cursor: pointer; }
+        .download-btn:active {
+            transform:scale(0.95);
+        }
         .apk-img { height: 40px; width:40px; background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhqb0ygBaGtxy7XfQj4rB5TD-7ZS4WV2UULxD9K4Dy-xxtSlEy885IRqSZdsioOnIU7xT8FsokpiVo6JIY97A4oNg3CRZdcLDiKocSkMRl07p0i9g8mKBOHH6UiNoTkFr4kNrMe-R5c-mn1716WquRN5zBVye_JJ4LYY4DYqMBG9WzgqTW4FIPYP8apT_c/s1173/1000128887.png"); background-size: 100% 100%; }
         .social-section { background-color: #210235; border-radius: 12px; padding: 12px; text-align: center; }
         .social-section p { color: #fff; font-weight: 700; font-size: 12px; margin-bottom: 10px; }
@@ -204,12 +214,15 @@
         .links { display: flex; justify-content: center; gap: 30px; }
         .links a { color: #e0d5e5; text-decoration: underline; font-size: 10px; font-weight: 700; }
         .logout-btn { width: 100%; background: linear-gradient(90deg, #ff8a00, #ff2a00); color: white; border:1px solid rgba(265,128,0,1); box-shadow: 0 1px 1px rgba(0,0,0,0.4), inset 0 2px 2px 2px rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 8px; font-size: 16px; font-weight: 900; margin-top: 5px; cursor: pointer; }
-
+        .logout-btn:active{
+            transform:scale(0.95);
+        }
         .profile-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 99999999; }
         .profile-modal-content { background-color: #210235; width: 90%; max-width: 400px; border-radius: 12px; padding: 20px; border: 2px solid #fdbd01; position: relative; }
         .close-profile-modal { position: absolute; top: 10px; right: 15px; color: #fdbd01; font-size: 20px; cursor: pointer; }
         .edit-form input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: none; background: #381e4b; color: white; }
         .save-btn { background: #fdbd01; color: black; font-weight: 900; padding: 10px; width: 100%; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .save-btn:active {transform:scale(0.95); }
         .reset-email-display { background: #381e4b; color: #fdbd01; padding: 12px; border-radius: 6px; margin: 15px 0; font-weight: bold; word-break: break-all; text-align: center; font-size: 16px; border: 1px solid rgba(253, 189, 1, 0.3); }
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; max-height: 350px; overflow-y: auto; }
         .avatar-option { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px solid transparent; cursor: pointer; object-fit: cover; background-color: #fff; }
@@ -438,7 +451,7 @@
         .my-referrals-btn:active { transform: scale(0.95); }
 
         .ref-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 1000000; display: none; justify-content: center; align-items: flex-start; padding-top: 50px; }
-        .ref-modal-content { background: #1e1e1e; width: 95%; max-width: 450px; max-height: 80vh; border-radius: 12px; display: flex; flex-direction: column; border: 1px solid #444; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+        .ref-modal-content { background: #1e1e1e; width: 95%; max-width: 450px; max-height: 90vh; min-height:70vh; border-radius: 12px; display: flex; flex-direction: column; border: 1px solid #444; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
         .ref-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #333; }
         .ref-modal-header h3 { color: white; font-size: 15px; margin: 0; }
         .ref-modal-close { color: #888; font-size: 20px; cursor: pointer; }
@@ -447,13 +460,30 @@
         .ref-card-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
         .ref-card-label { color: #888; }
         .ref-card-val { color: #ddd; font-weight: bold; }
-        .ref-card-email { color: #e02af0; font-size: 12px; font-weight: bold; margin-bottom: 8px; word-break: break-all;}
+        .ref-card-email { color: #e02af0; font-size: 1px; font-weight: bold; margin-bottom: 8px; word-break: break-all;}
         .ref-progress-container { margin-top: 8px; }
         .ref-progress-label { display: flex; justify-content: space-between; font-size: 9px; color: #aaa; margin-bottom: 4px; }
         .ref-progress-bar-bg { background: #111; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid #444;}
         .ref-progress-bar-fill { background: linear-gradient(90deg, #e02af0, #00ff00); height: 100%; width: 0%; transition: width 0.5s; }
 
-        .referral-success-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); display:none; align-items: center; justify-content: center; z-index: 1000000; backdrop-filter: blur(5px); }
+        /* Inviter Info Header Card */
+        .inviter-info-card {
+            background: linear-gradient(135deg, #2b103c 0%, #170724 100%);
+            border: 1px solid #8e54e9;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 10px 15px 15px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .inviter-details { display: flex; flex-direction: column; gap: 2px; }
+        .inviter-label { font-size: 10px; color: #b0a3a6; font-weight: 600; text-transform: uppercase; }
+        .inviter-email { font-size: 12px; color: #ffffff; font-weight: 800; word-break: break-all; }
+        .inviter-code-badge { background: rgba(253, 189, 1, 0.15); border: 1px solid #fdbd01; color: #fdbd01; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+
+        .referral-success-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); display:none; align-items: center; justify-content: center; z-index: 1000000000; backdrop-filter: blur(5px); }
         .referral-success-modal { background: radial-gradient(circle at center, rgba(255,255,255, 0.99), rgba(255,255,255, 0.09)); background-blend-mode: overlay; background-size: 100% 100%; border-radius: 12px; padding: 10px; width: 90vw; max-width: 400px; text-align: center; border: 1px solid white; outline: 1px solid #893BFF; }
         .referral-success-icon { margin-bottom: 10px; background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKvVv0yiPcve2WHpkLCUENn6LBBUII9Tuvloz9kye3JeSma0LYRp-GGZ3uLWi6Emu0AHNz4y2l7rMT4MPvmO2DoUIh5kDg6uDfdVzy7sq9N8YIM89Hllv76OIM4GUGkU5xHAl7vmjpttOF1j8Njp9CA8Wa7WoP7DITDeTVI5dGJ4C3EwIDIQdPg6LtSCo/s926/1000120191.png"); background-size: 100% 100%; animation: pulse 2s infinite; height:150px; width:150px; justify-self: center; align-self: center; }
         .referral-success-title { font-size: 15px; font-weight: 900; color: black; margin-bottom: 0px; font-family: fantasy; }
@@ -652,7 +682,7 @@
         <div class="promo-banner" onclick="document.querySelector('[data-section=\'promotion\']').click(); document.getElementById('menuToggleBtn').click();">
           <div class="promo-text-col">
             <h3>REFER & EARN</h3>
-            <p>Invite Friends Win Together</p>
+            <p>Invite Friends Earn Together</p>
           </div>
           <div class="promo-img" alt="Refer"></div>
         </div>
@@ -686,7 +716,7 @@
           </div>
         </div>
 
-        <button class="logout-btn" onclick="logout()">Log out</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 </div>
 
@@ -827,13 +857,25 @@
         </div>
 
         <div class="promo-details-row">
-            <div>Valid subordinates <strong id="valid-subordinates-count">0</strong> players <i class="fas fa-sync-alt" style="margin-left:5px; cursor:pointer;" onclick="loadPromotionData()"></i></div>
+            <div>Valid subordinates <strong id="valid-subordinates-count">0</strong> players <strong><i class="fas fa-sync-alt" style="margin-left:5px; cursor:pointer;" onclick="loadPromotionData()"></i> Refresh</strong></div>
             <div class="promo-details-btn" onclick="openMyReferralsModal()">Details</div>
         </div>
 
         <div class="promo-rules">
-            <p>What is a valid promotional number?</p>
-            Subordinate's Total Deposits <span>≥200</span>, Total Valid Bets <span>≥1000</span> Log in App to be valid
+            <p><span>1.</span>Earn Unlimited Commission On each Valid Referrals</p>
+            <p><span>2.</span>Earn ₹50 per person + upto ₹1000 for each Referrals</p>
+            <p><span>3.</span>Earn 2% Commission for Every Deposit your friend Makes</p>
+            <p><span>4.</span>What is a valid promotional number?</p>
+            Subordinate's Total Deposit <span>≥200</span>, Total Valid Investments <span>≥1000</span>
+        </div>
+
+        <!-- NEW: Inviter Details Header Banner -->
+        <div class="inviter-info-card" id="inviterInfoCard">
+            <div class="inviter-details">
+                <div class="inviter-label"><i class="fas fa-user-plus"></i> Invited By</div>
+                <div class="inviter-email" id="inviterEmail">Loading...</div>
+            </div>
+            <div class="inviter-code-badge" id="inviterCode">-</div>
         </div>
 
         <div class="mystery-grid-container">
@@ -976,6 +1018,10 @@
             <div class="ref-modal-close" onclick="closeMyReferralsModal()"><i class="fas fa-times"></i></div>
         </div>
         <div class="ref-modal-body" id="my-referrals-list"></div>
+        <!-- Single Collect/Claim Rewards Button -->
+        <div style="padding: 12px 15px; border-top: 1px solid #333; background: #1a1a1a; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+            <button id="collectAllReferralsBtn" class="my-referrals-btn" style="width: 100%; padding: 10px; font-size: 13px;" onclick="collectAllReferralRewards()">Collect All Rewards</button>
+        </div>
     </div>
 </div>
 
@@ -987,13 +1033,12 @@
     const sfx = {
       click: new Audio('https://audio.jukehost.co.uk/SOrgXYyuSDba9zvEdeTW8RrOGMrYd9y0'),
       alert: new Audio('https://audio.jukehost.co.uk/Y5rExcLxu34GqVwjFykiJAU5SploYaGX'),
-      nav: new Audio('https://actions.google.com/sounds/v1/ui/button_click.ogg') // Standard UI nav click sound
+      nav: new Audio('https://actions.google.com/sounds/v1/ui/button_click.ogg')
     };
     function playSound(type) {
       if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play().catch(e => console.log(e)); }
     }
     document.addEventListener('click', (e) => {
-        // Trigger different SFX for section navigation vs standard buttons
         if (e.target.closest('.nav-item')) {
             playSound('nav');
         } else if(e.target.tagName === 'A' || e.target.classList.contains('s-icon') || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
@@ -1001,10 +1046,10 @@
         }
     });
     function openLink(url) { window.open(url, '_blank'); }
-    function whatsappAction() { window.open('https://wa.me/', '_blank'); }
-    function telegramAction() { window.open('https://t.me/', '_blank'); }
+    function whatsappAction() { window.open('https://wa.me/916000025293', '_blank'); }
+    function telegramAction() { window.open('https://t.me/kamaaikendra777i', '_blank'); }
     function facebookAction() { window.open('https://facebook.com/', '_blank'); }
-    function instagramAction() { window.open('https://instagram.com/', '_blank'); }
+    function instagramAction() { window.open('https://www.instagram.com/kamaaikendra_kimi?igsh=MTRzd2J4MHBhbm5ydg==', '_blank'); }
 
     // ================= VIP LOGIC & CONFIG =================
     const VIP_LEVELS = [
@@ -1039,26 +1084,12 @@
       "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgh81C662ldFV-sOzWp-iywAdhUDiGja4rFlK8hO_ZBIBDRmysJa8uITr1pi_sKYsgf46Oe6oYtZ-xnNKyEasGcS4W6GXXK-5hszYxSfHYXNmzzZ4KX40xVCqgFSrJxkE_6LDBSFw4sXRT7ZD2-edi3_DiABfXlRQOSoandSe7BdUexjoUB_fvKtGe1l-4/s740/1000120291.jpg",
       "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg530Kl2Z-8M8Saj9Ao2lfCzoVoaoBSsbFV0vcvCsUMxUkVhk85_yAbIvh5_gK9n_6KOSt0uKhJMb08jeY-QrbKCwoZwlZCkA7gm4JGuWe5FNDgQZ7AUeAtpZTM9CJS4mCr2ASZK4iYf7mQTYgEXlyo5qq0TCaJbu52M7T1B5KrLa0GWT7AEmHqENblj4c/s1280/1000120292.jpg",
       "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBJdKr-gOcwTG-QTskfvHaXm0DcsQcZhXPvZSUodiSwDiakk8JLGHyqbXXA9HU_lQvC3s8Zh7fgPvQN2fBgVzpFaieTIUozTqPB0wttm29Re05eVRw7hm4fFr0m9czhV-A5M9an5DHLMxJqPaUx6iIvCO_vDcjnEWtZId1GMWvfyAdRJJbwri7LchyubM/s800/1000120293.webp",
-      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpgaHROMNTnXkk1AYepsCq9zB2yVQPnRlB97xlNk05P7BNhpBH5LyyGXp-d_C7h-oL5Tg2-kjWhktgx4L4L9ArkFPm26ByY87iLGVbY_CZcLx-VnQw_lOvXWG9Rk5F2GxcAovzp1it6UyNFFI7DH8-s37sa94qV83-EYqltzjl-lHTr1JpWhEOnGXXCr4/s800/1000120294.webp",
-      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhezjfZs82v0OBtTLeP8C0RKZ0EIMVNo2OlmcQJa85O8tikjvr2yQNH1Q9b7iYs_1GbDpND6fVX0NnGylcVCHLutK0ELUNOja-c1loNe_ho0boqoUgkcqovC5_cNz6hdhviG9J28T_Gt9iY7uzUEPySY9jh3Vs30wrDovzrmPXHRJP8udBE8mVPdR0bfFM/s626/1000120295.jpg"
+      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpgaHROMNTnXkk1AYepsCq9zB2yVQPnRlB97xlNk05P7BNhpBH5LyyGXp-d_C7h-oL5Tg2-kjWhktgx4L4L9ArkFPm26ByY87iLGVbY_CZcLx-VnQw_lOvXWG9Rk5F2GxcAovzp1it6UyNFFI7DH8-s37sa94qV83-EYqltzjl-lHTr1JpWhEOnGXXCr4/s800/1000120295.jpg"
     ];
     let tempAvatarUrl = "";
     let gridSelectedAvatarUrl = "";
     let currentUserData = {};
     let totalDepositGlobal = 0;
-
-    const HARDCODED_PLANS = [
-        { id: "plan_a", plantitle: "Product A", investmentamount: 999, dailyReturnAmount: 749.5, totalDays: 2, serialNo: 1 },
-        { id: "plan_b", plantitle: "Product B", investmentamount: 1999, dailyReturnAmount: 1499.5, totalDays: 2, serialNo: 2 },
-        { id: "plan_c", plantitle: "Product C", investmentamount: 2999, dailyReturnAmount: 1499.7, totalDays: 3, serialNo: 3 },
-        { id: "plan_d", plantitle: "Product D", investmentamount: 3999, dailyReturnAmount: 1749.75, totalDays: 4, serialNo: 4 },
-        { id: "plan_e", plantitle: "Product E", investmentamount: 4999, dailyReturnAmount: 1799.8, totalDays: 5, serialNo: 5 },
-        { id: "plan_f", plantitle: "Product F", investmentamount: 9999, dailyReturnAmount: 2715, totalDays: 7, serialNo: 6 },
-        { id: "plan_g", plantitle: "Product G", investmentamount: 199, dailyReturnAmount: 99, totalDays: 3, serialNo: 7 },
-        { id: "plan_h", plantitle: "Product H", investmentamount: 299, dailyReturnAmount: 149, totalDays: 3, serialNo: 8 },
-        { id: "plan_i", plantitle: "Product I", investmentamount: 499, dailyReturnAmount: 199, totalDays: 3, serialNo: 9 },
-        { id: "plan_j", plantitle: "Product J", investmentamount: 899, dailyReturnAmount: 500, totalDays: 3, serialNo: 10 },
-    ];
 
     const PRODUCT_LOGOS = {
         1:"https://spribe.co/assets/images/games/Av-new@2x.png?v=2.5.61",
@@ -1071,7 +1102,12 @@
         8:"https://spribe.co/assets/images/games/Di@2x.png?v=2.5.61",
         9:"https://spribe.co/assets/images/games/Ho.png?v=2.5.61",
         10:"https://spribe.co/assets/images/games/Ke@2x.png?v=2.5.61"};
-    function getProductLogoSrc(serialNo) { return PRODUCT_LOGOS[serialNo] || `#imagelogo(${serialNo}).png`; }
+
+    function getProductLogoSrc(plan) { 
+        if (plan && plan.productImage) return plan.productImage;
+        const serialNo = plan ? plan.serialNo : null;
+        return PRODUCT_LOGOS[serialNo] || `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%238e54e9"/><text x="50" y="55" font-size="12" text-anchor="middle" fill="white" font-weight="bold">Logo</text></svg>`;
+    }
 
     const firebaseConfig = {
       apiKey: "AIzaSyAfVcC_wBMaarOExZVrUeqZf65NzT7BCfU",
@@ -1098,7 +1134,7 @@
     ];
 
     let state = { 
-        uid: null, authed: false, balance: 0, plans: [...HARDCODED_PLANS], dailyReturnInvestments: [], transactionRecords: [],
+        uid: null, authed: false, balance: 0, plans: [], rawAdminPlans: [], dailyReturnInvestments: [], transactionRecords: [],
         unreadNotifications: 0, readMails: {}, allMails: [], deletedMails: {}, claimedMails: {},
         isClaiming: false, isMarking: false, isDeleting: false,
         referralCode: null, referralEarnings: 0, totalReferrals: 0,
@@ -1108,6 +1144,7 @@
         validSubordinatesCount: 0, claimedBoxes: {}, hasUnclaimedChests: false
     };
     let currentFilterDate = null;
+    let countdownInterval = null; // Countdown Timer Interval Reference
 
     function generateTransactionId() {
         const array = new Uint32Array(3);
@@ -1151,8 +1188,6 @@
     
     function renderHistoryUI() {
         const container = document.getElementById('historyEntries');
-        
-        // Merge standard transactions with dynamically pulled referral/mystery box incomes
         let allRecords = [...(state.transactionRecords || [])];
 
         if (state.referralHistory) {
@@ -1163,8 +1198,8 @@
                         amount: refTx.amount || appSettings.referralReward || 5,
                         timestamp: refTx.timestamp || 0,
                         isIncome: true,
-                        description: 'Referral Reward',
-                        transactionName: 'Referral Bonus',
+                        description: refTx.description || 'Referral Reward',
+                        transactionName: refTx.transactionName || 'Referral Bonus',
                         transactionId: refTx.transactionId || ('REF-' + (refTx.timestamp || 0))
                     });
                 }
@@ -1178,8 +1213,8 @@
                     amount: box.amount,
                     timestamp: box.timestamp || 0,
                     isIncome: true,
-                    description: `Mystery Box (${milestone} invites)`,
-                    transactionName: 'Mystery Box',
+                    description: "Mystery Box Bonus ",
+                    transactionName: "Mystery Chest Rewards",
                     transactionId: 'BOX-' + milestone
                 });
             });
@@ -1263,16 +1298,94 @@
         header.addEventListener('click', () => { list.classList.toggle('show'); });
         window.addEventListener('click', (e) => { if (!document.getElementById('dateDropdown').contains(e.target)) list.classList.remove('show'); });
     }
-    
-    function loadInvestmentsData() { if (!state.uid) return; db.ref(`appusers/${state.uid}/dailyReturnInvestments`).on('value', snap => { state.dailyReturnInvestments = Object.entries(snap.val() || {}).map(([id,val])=>({id,...val})); renderPlansUI(); }); }
+
+    // ================= DYNAMIC FIREBASE PLANS & EXPIRY LOGIC =================
+    function loadAdminPlans() {
+        db.ref('investmentPlans').on('value', snap => {
+            const raw = snap.val() || {};
+            state.rawAdminPlans = Object.entries(raw).map(([id, val]) => ({ id, ...val }));
+            processAndRenderPlans();
+        });
+    }
+
+    function loadInvestmentsData() { 
+        if (!state.uid) return; 
+        db.ref(`appusers/${state.uid}/dailyReturnInvestments`).on('value', snap => { 
+            state.dailyReturnInvestments = Object.entries(snap.val() || {}).map(([id,val])=>({id,...val})); 
+            processAndRenderPlans(); 
+        }); 
+    }
+
+    function processAndRenderPlans() {
+        const now = Date.now();
+        const activeOrCompletedUserInvestments = state.dailyReturnInvestments || [];
+        const combinedPlansMap = new Map();
+
+        // 1. Process active admin plans from Firebase
+        state.rawAdminPlans.forEach(plan => {
+            const isLimited = plan.planType === 'limited';
+            let isExpired = false;
+
+            if (isLimited && plan.expiryDate) {
+                const expiryTime = new Date(plan.expiryDate).getTime();
+                if (!isNaN(expiryTime) && now > expiryTime) {
+                    isExpired = true;
+                }
+            }
+
+            if (!isExpired) {
+                combinedPlansMap.set(plan.id, plan);
+            }
+        });
+
+        // 2. Preserve plans where user has already invested before expiry/removal
+        activeOrCompletedUserInvestments.forEach(inv => {
+            const planId = inv.planId;
+            const totalDays = Number(inv.totalDays || 0);
+            const startDate = Number(inv.startDate || Date.now());
+            const daysPassed = (now - startDate) / (1000 * 60 * 60 * 24);
+            const remainingDays = Number(inv.remainingDays !== undefined ? inv.remainingDays : totalDays);
+
+            // Plan remains if active and within total days / returns remaining
+            const isPlanActiveForUser = inv.status === 'active' && remainingDays > 0 && daysPassed <= totalDays;
+
+            if (isPlanActiveForUser && !combinedPlansMap.has(planId)) {
+                combinedPlansMap.set(planId, {
+                    id: planId,
+                    plantitle: inv.planName || "Invested Plan",
+                    investmentamount: inv.amount || 0,
+                    dailyReturnAmount: inv.dailyReturnAmount || 0,
+                    totalDays: totalDays,
+                    productImage: inv.productImage || null,
+                    serialNo: inv.serialNo || 1,
+                    planType: inv.planType || 'normal',
+                    isRetainedForInvestor: true
+                });
+            }
+        });
+
+        state.plans = Array.from(combinedPlansMap.values());
+        renderPlansUI();
+    }
     
     async function claimDailyReturn(investmentId, planId) { 
         const investment = state.dailyReturnInvestments.find(i=> i.id === investmentId); 
-        const plan = state.plans.find(p=> p.id === planId); 
+        const plan = state.plans.find(p=> p.id === planId) || { dailyReturnAmount: investment.dailyReturnAmount, plantitle: investment.planName }; 
         if(!investment || investment.remainingDays <= 0) return; 
+
+        const now = Date.now();
+        const daysPassed = (now - investment.startDate) / (1000 * 60 * 60 * 24);
+        if (daysPassed > investment.totalDays) {
+            await db.ref(`appusers/${state.uid}/dailyReturnInvestments/${investmentId}`).update({ status: 'expired', remainingDays: 0 });
+            showToast("Plan has expired after duration period.", "warning");
+            processAndRenderPlans();
+            return;
+        }
+
         const todayStr = new Date().toDateString(); 
         const lastReturnDateStr = investment.lastReturnDate ? new Date(investment.lastReturnDate).toDateString() : ''; 
         if(lastReturnDateStr === todayStr) { showToast("Already claimed today!", "warning"); return; } 
+        
         showLoading(); 
         try { 
             await db.ref(`appusers/${state.uid}`).transaction((userData) => { 
@@ -1282,12 +1395,15 @@
                 } 
                 return userData; 
             }); 
+            
+            const newRemainingDays = investment.remainingDays - 1;
             const updates = { 
-                [`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/remainingDays`]: investment.remainingDays - 1, 
+                [`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/remainingDays`]: newRemainingDays, 
                 [`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/lastReturnDate`]: Date.now(), 
                 [`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/totalReturnsReceived`]: (investment.totalReturnsReceived||0) + plan.dailyReturnAmount 
             }; 
-            if(investment.remainingDays - 1 <= 0) updates[`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/status`] = 'completed'; 
+
+            if(newRemainingDays <= 0) updates[`appusers/${state.uid}/dailyReturnInvestments/${investmentId}/status`] = 'completed'; 
             await db.ref().update(updates); 
             await saveTransactionRecord('daily_return', plan.dailyReturnAmount, state.balance + plan.dailyReturnAmount, `Return - ${plan.plantitle}`, plan.plantitle, true); 
             showToast(`₹${plan.dailyReturnAmount.toFixed(2)} claimed!`, "success"); 
@@ -1296,21 +1412,33 @@
     
     async function investInPlan(planId) { 
         const plan = state.plans.find(p=> p.id === planId); 
-        if(!plan) return; 
+        if(!plan) return;
+
+        if (plan.planType === 'limited' && plan.expiryDate) {
+            const expiryTime = new Date(plan.expiryDate).getTime();
+            if (!isNaN(expiryTime) && Date.now() > expiryTime) {
+                showToast("This limited time offer has expired!", "error");
+                processAndRenderPlans();
+                return;
+            }
+        }
+
         if(state.balance < plan.investmentamount) {
             const modal = document.getElementById('insufficientModal');
             modal.classList.add('active');
             return;
         } 
+        
         const activeInv = state.dailyReturnInvestments.find(inv => inv.planId === planId && inv.status === 'active' && inv.remainingDays > 0); 
         if(activeInv) { showToast("You already have an active investment for this product.", "warning"); return; } 
+        
         showLoading(); 
         try { 
             const deductionRes = await db.ref(`appusers/${state.uid}`).transaction((userData) => { 
                 if (userData) { 
                     let total = userData.totalBalance || 0; 
                     let withdrawable = userData.withdrawableBalance || 0; 
-                    let amount = plan.investmentamount; 
+                    let amount = Number(plan.investmentamount); 
                     if (total < amount) return undefined; 
                     let unwithdrawable = total - withdrawable; 
                     if (unwithdrawable < 0) unwithdrawable = 0; 
@@ -1325,33 +1453,124 @@
                 } 
                 return userData; 
             }); 
+            
             if(!deductionRes.committed) { showToast("Insufficient balance check failed", "error"); hideLoading(); return; } 
-            const newInv = { planId: plan.id, planName: plan.plantitle, amount: plan.investmentamount, dailyReturnAmount: plan.dailyReturnAmount, totalDays: plan.totalDays, remainingDays: plan.totalDays, status: 'active', startDate: Date.now(), lastReturnDate: 0, totalReturnsReceived: 0 }; 
+            
+            const newInv = { 
+                planId: plan.id, 
+                planName: plan.plantitle, 
+                amount: Number(plan.investmentamount), 
+                dailyReturnAmount: Number(plan.dailyReturnAmount), 
+                totalDays: Number(plan.totalDays), 
+                remainingDays: Number(plan.totalDays), 
+                status: 'active', 
+                startDate: Date.now(), 
+                lastReturnDate: 0, 
+                totalReturnsReceived: 0,
+                productImage: plan.productImage || null,
+                serialNo: plan.serialNo || 1,
+                planType: plan.planType || 'normal'
+            }; 
+            
             await db.ref(`appusers/${state.uid}/dailyReturnInvestments`).push(newInv); 
-            await saveTransactionRecord('investment', plan.investmentamount, state.balance - plan.investmentamount, `Investment in ${plan.plantitle}`, plan.plantitle, false); 
+            await saveTransactionRecord('investment', Number(plan.investmentamount), state.balance - Number(plan.investmentamount), `Investment in ${plan.plantitle}`, plan.plantitle, false); 
             showToast(`Successfully invested in ${plan.plantitle}`, "success"); 
         } catch(e) { showToast("Investment failed", "error"); } finally { hideLoading(); } 
     }
     
+    // UPDATED: Dynamic Countdown Timer Calculation for Limited Time Plans
+    function getRemainingTimeFormatted(expiryDateStr) {
+        if (!expiryDateStr) return "Expires soon";
+        const expiryTime = new Date(expiryDateStr).getTime();
+        const now = Date.now();
+        const diff = expiryTime - now;
+
+        if (diff <= 0) return "Expired";
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        if (days > 0) {
+            return `Expires in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            return `Expires in: ${hours}h ${minutes}m ${seconds}s`;
+        }
+    }
+
+    function startLimitedPlanCountdowns() {
+        if (countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            document.querySelectorAll('.limited-badge[data-expiry]').forEach(badge => {
+                const expiry = badge.getAttribute('data-expiry');
+                const timeText = getRemainingTimeFormatted(expiry);
+                badge.innerHTML = timeText;
+                if (timeText === "Expired") {
+                    processAndRenderPlans();
+                }
+            });
+        }, 1000);
+    }
+
     function renderPlansUI() { 
-        const container = document.getElementById('plansContainer'); container.innerHTML = ''; 
+        const container = document.getElementById('plansContainer'); 
+        container.innerHTML = ''; 
+
+        if (state.plans.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 40px; color: white; font-weight: bold;">No active investment plans available</div>';
+            return;
+        }
+
         state.plans.forEach(plan => { 
-            const totalReturn = plan.dailyReturnAmount * plan.totalDays; 
+            const totalReturn = Number(plan.dailyReturnAmount) * Number(plan.totalDays); 
             const activeInvestment = state.dailyReturnInvestments.find(inv => inv.planId === plan.id && inv.status === 'active' && inv.remainingDays > 0); 
             let btnHtml = ''; 
+
             if(activeInvestment) { 
-                const canClaimToday = (() => { if(!activeInvestment.lastReturnDate) return true; return new Date(activeInvestment.lastReturnDate).toDateString() !== new Date().toDateString(); })(); 
+                const canClaimToday = (() => { 
+                    if(!activeInvestment.lastReturnDate) return true; 
+                    return new Date(activeInvestment.lastReturnDate).toDateString() !== new Date().toDateString(); 
+                })(); 
                 btnHtml = `<button class="card-btn ${canClaimToday ? 'claim-btn' : 'claimed-btn'}" onclick="event.stopPropagation(); ${canClaimToday ? `claimDailyReturn('${activeInvestment.id}','${plan.id}')` : ''}">${canClaimToday ? 'Claim Return' : 'Claimed Today'}</button>`; 
-            } else { btnHtml = `<button class="card-btn" onclick="event.stopPropagation(); investInPlan('${plan.id}')">Invest</button>`; } 
-            const logoSrc = getProductLogoSrc(plan.serialNo); 
-            const card = document.createElement('div'); card.className = 'plan-card'; 
+            } else { 
+                btnHtml = `<button class="card-btn" onclick="event.stopPropagation(); investInPlan('${plan.id}')">Invest</button>`; 
+            } 
+            
+            const logoSrc = getProductLogoSrc(plan); 
+            const card = document.createElement('div'); 
+            card.className = 'plan-card'; 
             card.onclick = (e) => { if(!e.target.closest('button')) openProductHistoryModal(plan.id); }; 
-            card.innerHTML = `<div class="plan-badge">Days: ${plan.totalDays}</div><div class="card-top"><div class="card-image-wrapper"><img class="product-logo-img" src="${logoSrc}" alt="" onerror="this.onerror=null; this.classList.add('error-fallback'); this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%238e54e9\'/><text x=\'50\' y=\'55\' font-size=\'12\' text-anchor=\'middle\' fill=\'white\' font-weight=\'bold\'>${plan.plantitle.charAt(0)}</text></svg>';"></div><div class="card-info"><div class="card-title">${plan.plantitle}</div><div class="card-stats"><div class="stat-col"><span class="stat-val">₹${plan.dailyReturnAmount}</span><span class="stat-lbl">Daily Income</span></div><div class="stat-col"><span class="stat-val">₹${totalReturn}</span><span class="stat-lbl">Total Income</span></div></div></div></div><div class="card-bottom"><div class="card-price">Price: ₹${plan.investmentamount}</div>${btnHtml}</div>`; 
+
+            // UPDATED: Countdown Timer displayed on limited plans instead of FA Icon tag
+            let limitedTag = '';
+            if (plan.planType === 'limited' && plan.expiryDate) {
+                const countdownText = getRemainingTimeFormatted(plan.expiryDate);
+                limitedTag = `<div class="limited-badge" data-expiry="${plan.expiryDate}">${countdownText}</div>`;
+            }
+
+            card.innerHTML = `${limitedTag}<div class="plan-badge">Days: ${plan.totalDays}</div><div class="card-top"><div class="card-image-wrapper"><img class="product-logo-img" src="${logoSrc}" alt="" onerror="this.onerror=null; this.classList.add('error-fallback');"></div><div class="card-info"><div class="card-title">${plan.plantitle}</div><div class="card-stats"><div class="stat-col"><span class="stat-val">₹${plan.dailyReturnAmount}</span><span class="stat-lbl">Daily Income</span></div><div class="stat-col"><span class="stat-val">₹${totalReturn.toFixed(2)}</span><span class="stat-lbl">Total Income</span></div></div></div></div><div class="card-bottom"><div class="card-price">Price: ₹${plan.investmentamount}</div>${btnHtml}</div>`; 
             container.appendChild(card); 
-        }); performSearch(); 
+        }); 
+        performSearch(); 
+        startLimitedPlanCountdowns();
     }
     
-    function openProductHistoryModal(planId) { const plan = state.plans.find(p=> p.id === planId); if(!plan) return; document.getElementById('modalPlanTitle').innerText = `${plan.plantitle} Records`; const allInvestments = state.dailyReturnInvestments.filter(inv => inv.planId === planId); let totalCollected = 0, historyHtml = ''; allInvestments.forEach(inv => { totalCollected += (inv.totalReturnsReceived || 0); const statusText = inv.status === 'completed' ? 'Completed' : (inv.remainingDays > 0 ? 'Active' : 'Expired'); historyHtml += `<div class="history-item"><strong>Status: ${statusText}</strong><br>Invested: ₹${inv.amount}<br>Collected: ₹${(inv.totalReturnsReceived||0).toFixed(2)}<br><small>${new Date(inv.startDate).toLocaleString('en-IN')}</small></div>`; }); document.getElementById('modalInvestmentsList').innerHTML = historyHtml || '<div style="text-align:center;color:#888;">No history found</div>'; document.getElementById('modalReturnsInfo').innerHTML = `Total Lifetime Mined: ₹${totalCollected.toFixed(2)}`; document.getElementById('productHistoryModal').classList.add('active'); }
+    function openProductHistoryModal(planId) { 
+        const plan = state.plans.find(p=> p.id === planId) || { plantitle: "Product" }; 
+        document.getElementById('modalPlanTitle').innerText = `${plan.plantitle} Records`; 
+        const allInvestments = state.dailyReturnInvestments.filter(inv => inv.planId === planId); 
+        let totalCollected = 0, historyHtml = ''; 
+        allInvestments.forEach(inv => { 
+            totalCollected += (inv.totalReturnsReceived || 0); 
+            const statusText = inv.status === 'completed' ? 'Completed' : (inv.remainingDays > 0 ? 'Active' : 'Expired'); 
+            historyHtml += `<div class="history-item"><strong>Status: ${statusText}</strong><br>Invested: ₹${inv.amount}<br>Collected: ₹${(inv.totalReturnsReceived||0).toFixed(2)}<br><small>${new Date(inv.startDate).toLocaleString('en-IN')}</small></div>`; 
+        }); 
+        document.getElementById('modalInvestmentsList').innerHTML = historyHtml || '<div style="text-align:center;color:#888;">No history found</div>'; 
+        document.getElementById('modalReturnsInfo').innerHTML = `Total Lifetime Mined: ₹${totalCollected.toFixed(2)}`; 
+        document.getElementById('productHistoryModal').classList.add('active'); 
+    }
+
     function closeProductModal() { document.getElementById('productHistoryModal').classList.remove('active'); }
     function subscribeBalance() { if(!state.uid) return; db.ref(`appusers/${state.uid}/totalBalance`).on('value', snap => { state.balance = parseFloat(snap.val() || 0); updateBalanceUI(); }); }
     function performSearch() { const term = document.getElementById('planSearchInput').value.trim().toLowerCase(); document.querySelectorAll('.plan-card').forEach(card => { const title = card.querySelector('.card-title')?.innerText.toLowerCase() || ''; card.style.display = (term === '' || title.includes(term)) ? 'block' : 'none'; }); }
@@ -1369,6 +1588,25 @@
         document.getElementById('displayWithdrawable').innerText = `₹${(data.withdrawableBalance || 0).toFixed(2)}`;
         document.getElementById('statRefEarn').innerText = `₹${(data.referralEarnings || 0).toFixed(2)}`;
         calculateAggregates(uid);
+        
+        // UPDATED: Fetch Inviter Details (Invited By)
+        if (data.referredVia) {
+            db.ref('appusers').orderByChild('referralCode').equalTo(data.referredVia).once('value', inviterSnap => {
+                if (inviterSnap.exists()) {
+                    inviterSnap.forEach(invChild => {
+                        const invData = invChild.val();
+                        document.getElementById('inviterEmail').innerText = invData.email || 'Inviter User';
+                        document.getElementById('inviterCode').innerText = invData.referralCode || data.referredVia;
+                    });
+                } else {
+                    document.getElementById('inviterEmail').innerText = 'Inviter User';
+                    document.getElementById('inviterCode').innerText = data.referredVia;
+                }
+            });
+        } else {
+            document.getElementById('inviterEmail').innerText = 'Direct Registration';
+            document.getElementById('inviterCode').innerText = 'N/A';
+        }
       });
     }
 
@@ -1790,22 +2028,65 @@
 
     async function calculateValidSubordinates() {
         let count = 0;
+        let updates = {};
+        let needsUpdate = false;
+
         const promises = Object.entries(state.referrals).map(async ([key, referral]) => {
-            let deposit = Number(referral.totalDeposit || 0);
+            let deposit = 0;
+            let investments = 0;
             try {
                 const snap = await db.ref('depositRequests').orderByChild('uid').equalTo(key).once('value');
-                let fetchedDeposit = 0;
                 snap.forEach(child => {
                     let val = child.val();
-                    if (val.status === 'success' || val.status === 'approved') { fetchedDeposit += Number(val.amount) || 0; }
+                    if (val.status === 'success' || val.status === 'approved') { deposit += Number(val.amount) || 0; }
                 });
-                if (fetchedDeposit > deposit) deposit = fetchedDeposit;
+
+                const invSnap = await db.ref(`appusers/${key}/dailyReturnInvestments`).once('value');
+                invSnap.forEach(child => {
+                    let val = child.val();
+                    investments += Number(val.amount) || 0;
+                });
+                
+                let missionCompleted = referral.missionCompleted || false;
+                let missionRewardCollected = referral.missionRewardCollected || false;
+                let collectedCommission = Number(referral.collectedCommission || 0);
+                
+                let totalCommissionEarned = deposit * 0.02;
+                let pendingCommission = Math.max(0, totalCommissionEarned - collectedCommission);
+
+                if (!missionCompleted && deposit >= 200 && investments >= 1000) {
+                    missionCompleted = true;
+                }
+                
                 if (!state.referrals[key]) state.referrals[key] = {};
-                state.referrals[key].totalDeposit = deposit;
-            } catch (e) { console.error("Error fetching deposit dynamically:", e); }
-            if (deposit >= 200) count++;
+                
+                if (referral.totalDeposit !== deposit || 
+                    referral.totalInvestments !== investments || 
+                    referral.missionCompleted !== missionCompleted || 
+                    referral.pendingCommission !== pendingCommission) {
+                    
+                    needsUpdate = true;
+                    updates[`appusers/${state.uid}/Referrals/${key}/totalDeposit`] = deposit;
+                    updates[`appusers/${state.uid}/Referrals/${key}/totalInvestments`] = investments;
+                    updates[`appusers/${state.uid}/Referrals/${key}/missionCompleted`] = missionCompleted;
+                    updates[`appusers/${state.uid}/Referrals/${key}/pendingCommission`] = pendingCommission;
+                    
+                    state.referrals[key].totalDeposit = deposit;
+                    state.referrals[key].totalInvestments = investments;
+                    state.referrals[key].missionCompleted = missionCompleted;
+                    state.referrals[key].pendingCommission = pendingCommission;
+                }
+
+            } catch (e) { console.error("Error fetching data dynamically:", e); }
+            
+            if (state.referrals[key].missionCompleted) count++;
         });
         await Promise.all(promises);
+        
+        if (needsUpdate) {
+            await db.ref().update(updates);
+        }
+
         state.validSubordinatesCount = count;
         const countEl = document.getElementById('valid-subordinates-count');
         if(countEl) countEl.innerText = count;
@@ -1864,7 +2145,7 @@
         grid.innerHTML = html;
     }
 
-    async function openMysteryBox(milestone) {
+        async function openMysteryBox(milestone) {
         if (!state.authed || state.isClaiming) return;
         state.isClaiming = true; showLoading();
 
@@ -1872,7 +2153,9 @@
             hideLoading(); state.isClaiming = false; return;
         }
 
-        const winAmount = Math.floor(Math.random() * 500) + 5; 
+        // Updated Min = 9, Max = 99
+        const winAmount = Math.floor(Math.random() * 95) + 5; 
+        
         try {
             await db.ref(`appusers/${state.uid}/totalBalance`).transaction(current => { return (Number(current) || 0) + winAmount; });
             await db.ref(`appusers/${state.uid}/referralEarnings`).transaction(current => { return (Number(current) || 0) + winAmount; });
@@ -1883,6 +2166,7 @@
         } catch(e) { console.error("Error claiming mystery box", e); showToast("Failed to open box", "error"); hideLoading(); }
         state.isClaiming = false;
     }
+
 
     function updateTotalReferralsCount() {
         if (!state.authed) return;
@@ -1932,31 +2216,176 @@
         state.hasNewReferralNotification = false; updatePromotionNotificationDot();
     }
 
+    // UPDATED: Referral Modal Population with Individual Total Earned display & single Collect All button logic
     function populateMyReferralsModal() {
         const container = document.getElementById('my-referrals-list');
         if (!container) return;
         const referralsArray = Object.entries(state.referrals).map(([id, data]) => ({ id, ...data }));
         referralsArray.sort((a, b) => b.timestamp - a.timestamp);
-        if(referralsArray.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 20px; color: #888;">No referrals yet</div>`; return; }
+        if(referralsArray.length === 0) { 
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color: #888;">No referrals yet</div>`; 
+            document.getElementById('collectAllReferralsBtn').disabled = true;
+            document.getElementById('collectAllReferralsBtn').style.opacity = '0.5';
+            return; 
+        }
 
         let html = '';
+        let anyCollectable = false;
+
         referralsArray.forEach(ref => {
             const deposit = Number(ref.totalDeposit || 0);
-            const progressPct = Math.min(100, (deposit / 200) * 100).toFixed(0);
+            const investments = Number(ref.totalInvestments || 0);
+            const pendingComm = Number(ref.pendingCommission || 0);
+            const missionDone = ref.missionCompleted || false;
+            const rewardCollected = ref.missionRewardCollected || false;
+            
+            // Total earned calculated from mission reward + collected commission
+            const totalEarnedFromUser = (rewardCollected ? 50 : 0) + Number(ref.collectedCommission || 0);
+
+            let depPct = Math.min(100, (deposit / 200) * 100).toFixed(0);
+            let invPct = Math.min(100, (investments / 1000) * 100).toFixed(0);
+            
+            if ((missionDone && !rewardCollected) || pendingComm > 0) {
+                anyCollectable = true;
+            }
+
             html += `
                 <div class="ref-card">
-                    <div class="ref-card-email"><i class="fas fa-user-circle"></i> ${ref.email || 'User'}</div>
+                    <div class="ref-card-email" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span><i class="fas fa-user-circle"></i> ${ref.email || 'User'}</span>
+                        <span style="background:rgba(0,255,0,0.15); border:1px solid #00ff00; color:#00ff00; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">
+                            Earned: ₹${totalEarnedFromUser.toFixed(2)}
+                        </span>
+                    </div>
                     <div class="ref-card-row"><span class="ref-card-label">Join Date:</span><span class="ref-card-val">${new Date(ref.timestamp).toLocaleDateString()}</span></div>
+                    <div class="ref-card-row"><span class="ref-card-label">Pending Commission (2%):</span><span class="ref-card-val" style="color:#fdbd01; font-weight:bold;">₹${pendingComm.toFixed(2)}</span></div>
                     <div class="ref-progress-container">
-                        <div class="ref-progress-label"><span>Task Progress:</span><span style="color:${progressPct === '100' ? '#00ff00' : '#e02af0'}; font-weight:bold;">${progressPct}% (₹${deposit.toFixed(2)} / ₹200)</span></div>
-                        <div class="ref-progress-bar-bg"><div class="ref-progress-bar-fill" style="width: ${progressPct}%;"></div></div>
+                        <div class="ref-progress-label"><span>Deposit Progress:</span><span style="color:${depPct === '100' ? '#00ff00' : '#e02af0'}; font-weight:bold;">${depPct}% (₹${deposit.toFixed(2)} / ₹200)</span></div>
+                        <div class="ref-progress-bar-bg"><div class="ref-progress-bar-fill" style="width: ${depPct}%;"></div></div>
+                    </div>
+                    <div class="ref-progress-container" style="margin-top:8px;">
+                        <div class="ref-progress-label"><span>Investment Progress:</span><span style="color:${invPct === '100' ? '#00ff00' : '#e02af0'}; font-weight:bold;">${invPct}% (₹${investments.toFixed(2)} / ₹1000)</span></div>
+                        <div class="ref-progress-bar-bg"><div class="ref-progress-bar-fill" style="width: ${invPct}%;"></div></div>
                     </div>
                 </div>`;
         });
         container.innerHTML = html;
+
+        const collectAllBtn = document.getElementById('collectAllReferralsBtn');
+        if (collectAllBtn) {
+            collectAllBtn.disabled = !anyCollectable;
+            collectAllBtn.style.opacity = anyCollectable ? '1' : '0.5';
+        }
     }
 
-    function openMyReferralsModal() { document.getElementById('myReferralsModal').style.display = 'flex'; }
+    // UPDATED: Single Collect All Rewards Function for Referrals List
+    async function collectAllReferralRewards() {
+        if (!state.authed || state.isClaiming) return;
+
+        let totalToCollect = 0;
+        let updates = {};
+        let successMessageHtml = '';
+        let hasItemsToCollect = false;
+
+        state.isClaiming = true;
+        showLoading();
+
+        Object.entries(state.referrals).forEach(([refId, ref]) => {
+            const missionDone = ref.missionCompleted || false;
+            const rewardCollected = ref.missionRewardCollected || false;
+            const pendingComm = Number(ref.pendingCommission || 0);
+
+            if ((missionDone && !rewardCollected) || pendingComm > 0) {
+                hasItemsToCollect = true;
+
+                // 1. Mission Completion
+                if (missionDone && !rewardCollected) {
+                    const missionReward = 50; 
+                    totalToCollect += missionReward;
+                    updates[`appusers/${state.uid}/Referrals/${refId}/missionRewardCollected`] = true;
+                    updates[`appusers/${state.uid}/Referrals/${refId}/earned`] = firebase.database.ServerValue.increment(missionReward);
+                    
+                    const txId1 = generateTransactionId();
+                    const historyKey1 = `ref_collect_mission_${Date.now()}_${refId}`;
+                    updates[`appusers/${state.uid}/history/${historyKey1}`] = {
+                        type: 'referral_earned',
+                        from: refId,
+                        amount: missionReward,
+                        timestamp: Date.now(),
+                        description: "Referral Mission completed",
+                        transactionName: "Referral Rewards",
+                        transactionId: txId1,
+                        notified: true 
+                    };
+                    
+                    successMessageHtml += `Mission Reward (${ref.email || 'User'}): ₹50<br>`;
+                }
+
+                // 2. Deposit Commission (2%)
+                if (pendingComm > 0) {
+                    totalToCollect += pendingComm;
+                    updates[`appusers/${state.uid}/Referrals/${refId}/pendingCommission`] = 0;
+                    updates[`appusers/${state.uid}/Referrals/${refId}/collectedCommission`] = firebase.database.ServerValue.increment(pendingComm);
+                    
+                    const txId2 = generateTransactionId();
+                    const historyKey2 = `ref_collect_comm_${Date.now()}_${refId}`;
+                    updates[`appusers/${state.uid}/history/${historyKey2}`] = {
+                        type: 'referral_earned',
+                        from: refId,
+                        amount: pendingComm,
+                        timestamp: Date.now(),
+                        description: "2% on every deposit",
+                        transactionName: "Referral Commission",
+                        transactionId: txId2,
+                        notified: true 
+                    };
+                    
+                    successMessageHtml += `Deposit Commission (${ref.email || 'User'}): ₹${pendingComm.toFixed(2)}<br>`;
+                }
+            }
+        });
+
+        if (hasItemsToCollect && totalToCollect > 0) {
+            try {
+                await db.ref(`appusers/${state.uid}/totalBalance`).transaction(current => (Number(current) || 0) + totalToCollect);
+                await db.ref(`appusers/${state.uid}/withdrawableBalance`).transaction(current => (Number(current) || 0) + totalToCollect);
+                await db.ref(`appusers/${state.uid}/referralEarnings`).transaction(current => (Number(current) || 0) + totalToCollect);
+                
+                await db.ref().update(updates);
+                
+                let successMsg = `Successfully collected all rewards: <span style="color:green; font-weight:bold;">₹${totalToCollect.toFixed(2)}</span>!<br><br>` + successMessageHtml;
+                
+                document.getElementById('referralSuccessMsg').innerHTML = successMsg;
+                showReferralSuccessModal();
+                
+                // Update local memory states
+                Object.keys(state.referrals).forEach(refId => {
+                    state.referrals[refId].pendingCommission = 0;
+                    if (state.referrals[refId].missionCompleted) state.referrals[refId].missionRewardCollected = true;
+                });
+
+                populateMyReferralsModal();
+                
+            } catch (e) {
+                console.error("Collection error:", e);
+                showToast("Failed to collect rewards.", "error");
+            }
+        } else {
+            showToast("No pending rewards available to collect.", "warning");
+        }
+
+        hideLoading();
+        state.isClaiming = false;
+    }
+
+    async function openMyReferralsModal() { 
+        showLoading();
+        await calculateValidSubordinates(); // Make sure data is 100% fresh
+        populateMyReferralsModal();
+        hideLoading();
+        document.getElementById('myReferralsModal').style.display = 'flex'; 
+    }
+    
     function closeMyReferralsModal() { document.getElementById('myReferralsModal').style.display = 'none'; }
 
     function shareOnPlatformPromo(platform) {
@@ -2057,16 +2486,55 @@
     }
 
     // ================= INITIALIZATION LOGIC =================
+    
+    // NEW: Function to monitor exact millisecond disconnections to fix real-time status.
+    function initializeRealtimePresence(uid) {
+        const userStatusRef = db.ref(`appusers/${uid}/status`);
+        const userLastActiveRef = db.ref(`appusers/${uid}/lastLogin`);
+
+        db.ref('.info/connected').on('value', function(snapshot) {
+            if (snapshot.val() === false) {
+                return;
+            }
+            
+            // When connection drops, Firebase Server immediately sets this to 'offline'
+            userStatusRef.onDisconnect().set('offline');
+            userLastActiveRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP).then(() => {
+                // Now safely set to online since the disconnect hook is ready
+                userStatusRef.set('online');
+                userLastActiveRef.set(firebase.database.ServerValue.TIMESTAMP);
+            });
+        });
+    }
+
     async function initUser() { 
       if(!state.uid) return; 
       fetchUserData(state.uid);
       const snap = await db.ref(`appusers/${state.uid}/totalBalance`).once('value'); 
       if(snap.val() === null) await db.ref(`appusers/${state.uid}/totalBalance`).set(0); 
-      subscribeBalance(); loadInvestmentsData(); loadTransactionRecords(); 
-      setupNotificationsRealTimeUpdates(); loadRedeemCodes(); loadUsedRedeemCodes(); initializePromotionSection(); 
+      subscribeBalance(); 
+      loadAdminPlans(); 
+      loadInvestmentsData(); 
+      loadTransactionRecords(); 
+      setupNotificationsRealTimeUpdates(); 
+      loadRedeemCodes(); 
+      loadUsedRedeemCodes(); 
+      initializePromotionSection(); 
     }
     
-    auth.onAuthStateChanged(user => { if(user) { state.uid = user.uid; state.authed = true; initUser(); } else window.location.href = 'index.html'; });
+    auth.onAuthStateChanged(user => { 
+        if(user) { 
+            state.uid = user.uid; 
+            state.authed = true; 
+            initUser(); 
+            
+            // NEW: Fire the presence system when authenticated
+            initializeRealtimePresence(user.uid);
+            
+        } else {
+            window.location.href = 'index.html'; 
+        } 
+    });
     
     document.addEventListener('DOMContentLoaded', () => {
         const menuToggleBtn = document.getElementById('menuToggleBtn');
