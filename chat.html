@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Kimi Support</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <!-- FONT AWESOME -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -26,6 +26,7 @@
   --warning: #f59e0b;
   --info: #3b82f6;
 }
+
     /* Disable text selection */
     * {
         -webkit-user-select: none;
@@ -33,6 +34,10 @@
         -ms-user-select: none;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     }
 
     /* Disable drag of images and links */
@@ -51,37 +56,46 @@
     }
 
     /* Prevent right-click via pointer-events */
-    body {
-        cursor: default;
+    html {
+        height: 100%;
+        width: 100%;
     }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-}
-
-body {
-  background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
+    body {
+        cursor: default;
+        background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
         background-blend-mode: overlay;
         background-size: 100% 100%;
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
+        color: var(--text);
+        height: 100vh;
+        height: 100dvh; /* Fix for mobile address bars hiding bottom content */
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        backdrop-filter: brightness(0.5);
+    }
+
+/* MAIN APP CONTAINER */
+.app-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  backdrop-filter: brightness(0.5);
+  overflow: hidden;
 }
 
 /* HEADER */
 .header {
-  position:fixed;
-  top:0;
-  left:0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 60px;
-  width:100vw;
-  background:transparent;
+  width: 100%;
+  background: transparent;
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -112,7 +126,6 @@ body {
     height:40px;
     border-radius: 50px;
     align-items: center;
-    align-items: center;
     align-self: center;
     margin:auto;
     padding-right: 20px;
@@ -136,12 +149,11 @@ body {
   gap: 10px;
   background:#2B3856;
   padding:3px;
-    height:40px;
-    border-radius: 50px;
-    align-items: center;
-    align-items: center;
-    align-self: center;
-    border:1px solid rgba(255,255,255,0.1);
+  height:40px;
+  border-radius: 50px;
+  align-items: center;
+  align-self: center;
+  border:1px solid rgba(255,255,255,0.1);
 }
 
 .icon-btn {
@@ -188,10 +200,11 @@ body {
 
 /* ANNOUNCEMENT */
 .announce {
-    position:fixed;
-    top:60px;
-    left:0;
-    width:100vw;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: linear-gradient(90deg, #fff7db, #ffe8b3);
   padding: 5px 10px;
   display: flex;
@@ -201,7 +214,7 @@ body {
   animation: slideDown 0.3s ease-out;
   border-radius: 2px;
   z-index: 110;
-  overflow: hidden; /* Added to keep marquee neat */
+  overflow: hidden; 
 }
 
 .announce i {
@@ -228,11 +241,11 @@ body {
   flex-shrink: 0;
   backdrop-filter: blur(5px);
   z-index: 10;
-  cursor: pointer; /* Added */
-  transition: transform 0.2s ease, background 0.2s ease; /* Added */
+  cursor: pointer; 
+  transition: transform 0.2s ease, background 0.2s ease; 
 }
 .pinned-header:active {
-  transform: scale(0.98); /* Added */
+  transform: scale(0.98); 
 }
 .pinned-header.hidden {
   display: none !important;
@@ -341,7 +354,7 @@ body {
   transform: translateY(100%);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-  max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
 }
 
@@ -533,22 +546,21 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-height: 50vh;
-  max-height: 100vh;
-  width:100vw;
-  padding-top:100px;
+  width: 100%;
+  height: 100%;
+  padding-top: 95px; /* Safely clears Header & Announce */
   padding-bottom: 0px;
 }
 
 .chat {
   flex: 1;
-  padding: 0px 12px 16px 12px;
+  padding: 0px 12px;
+  padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); /* Safely clears the Input Bar */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 5px;
   background: transparent; 
-  padding-bottom: 70px;
 }
 
 .chat-date {
@@ -577,7 +589,7 @@ body {
 }
 
 .message.user {
-  background: linear-gradient(0deg, #357EC7, #6698FF);
+  background: linear-gradient(180deg, #357EC7, #6698FF);
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 3px;
@@ -697,11 +709,10 @@ body {
 
 /* INPUT AREA CONTAINER */
 .input-area-container {
-  position: fixed;
-  bottom:0;
-  left: 0;
-  right: 0;
-  width:auto;
+  position: absolute;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  left: 8px;
+  right: 8px;
   height: 50px;
   background:rgba(5,15,25,1);
   border: 1px solid rgba(255,255,255,0.1);
@@ -709,7 +720,6 @@ body {
   display: flex;
   align-items: center;
   padding: 0 5px;
-  margin:8px;
   gap: 8px;
   z-index: 50;
 }
@@ -764,7 +774,7 @@ body {
   transform: scale(0.9);
 }
 .addphoto{
-    background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgcGDe7afwg0UcfmeFVqtDhzeAhvFYXhnqEopTE085y4zKHNewmW9BTa4gqpQQ5HjcM9Bt0h5VdJQ0ZEa7X8Toy-kbub61P8LiaPZP9_ZVhAhf56HYRAQq4XXgpwb4A2I9ralOpa6r3uMhfkP3lyNnE2Oh8ZN-VCnQadP9q6nHZ7CkQtVQs1bCFPgtyOfg/s16000/1000111625.png");
+  background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgcGDe7afwg0UcfmeFVqtDhzeAhvFYXhnqEopTE085y4zKHNewmW9BTa4gqpQQ5HjcM9Bt0h5VdJQ0ZEa7X8Toy-kbub61P8LiaPZP9_ZVhAhf56HYRAQq4XXgpwb4A2I9ralOpa6r3uMhfkP3lyNnE2Oh8ZN-VCnQadP9q6nHZ7CkQtVQs1bCFPgtyOfg/s16000/1000111625.png");
   background-size: 100% 100%;
   color: white;
 }
@@ -785,8 +795,8 @@ body {
 
 /* IMAGE PREVIEW */
 .image-preview-container {
-  position: fixed;
-  bottom: 50px;
+  position: absolute;
+  bottom: calc(65px + env(safe-area-inset-bottom, 0px));
   left: 10px;
   right: 10px;
   z-index: 40;
@@ -830,10 +840,7 @@ body {
 /* FULL SCREEN IMAGE MODAL */
 .fullscreen-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.95);
   z-index: 1002;
   display: flex;
@@ -1387,7 +1394,7 @@ function updateAnnouncementBar() {
   if (!isAdminConnected) {
     announceBar.innerHTML = `
       <i class="fas fa-volume-up"></i>
-      <b style="font-size: 13px;"><span style="color: #ff6600;">Sorry , We are away at the Moment</span> . Please Describe Your Issue We Will Catch You soon..</b>
+      <b style="font-size: 12px;"><span style="color: #ff6600;">Sorry , We are away at the Moment</span> . Please Describe Your Issue We Will Catch You soon..</b>
     `;
   } else {
     if (!hasSentMessage) {
@@ -1398,8 +1405,8 @@ function updateAnnouncementBar() {
     } else {
       announceBar.innerHTML = `
         <i class="fas fa-volume-up"></i>
-        <marquee style="flex: 1; min-width: 0; font-size: 14px; color: #92400e; font-weight: bold; display: flex; align-items: center;" scrollamount="4">
-           &nbsp;|&nbsp; Deposit Are Usually Credited Within Minutes  &nbsp;|&nbsp;  Withdrawals are Processed within 24 hours &nbsp;|&nbsp;  Referral Program: Earn rewards for inviting friends! &nbsp;|&nbsp; 📈 Investments: Check our active plans and ROI &nbsp;|&nbsp; 🔐 Signup/in: Need help? Rest your password below &nbsp;|&nbsp; 💡 Tip: Keep your account details safe!
+        <marquee style="flex: 1; min-width: 0; font-size: 12px; color: #92400e; font-weight: bold; display: flex; align-items: center;" scrollamount="4">
+           &nbsp;|&nbsp; Always Submit 12digit UTR codes For All Deposits  &nbsp;|&nbsp;  It May Take Upto 3-7 Days For The Bank To Process Deposits and Withdrawls &nbsp;|&nbsp; Get Guranteed Rewards On Each Referrals &nbsp;|&nbsp; Invest Your Funds And Grow More With Kimi &nbsp;|&nbsp; Never Disclose Your Login Password With Anyone! &nbsp;|&nbsp; 💡 Tip:Never Disclose Your Account Details With Anyone Keep your account details safe!
         </marquee>
       `;
     }
