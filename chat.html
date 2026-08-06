@@ -55,31 +55,36 @@
         pointer-events: none;
     }
 
-    /* Prevent right-click via pointer-events */
+    /* Lock html height */
     html {
         height: 100%;
         width: 100%;
+        overflow: hidden;
     }
 
+    /* ULTIMATE FIX: Locks body to actual visible window, ignoring address bar scroll issues */
     body {
         cursor: default;
-        background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
-        background-blend-mode: overlay;
-        background-size: 100% 100%;
-        color: var(--text);
-        height: 100vh;
-        height: 100dvh; /* Fix for mobile address bars hiding bottom content */
+        position: fixed; 
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
         width: 100%;
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
+        background-blend-mode: overlay;
+        background-size: 100% 100%;
+        color: var(--text);
         backdrop-filter: brightness(0.5);
     }
 
 /* MAIN APP CONTAINER */
 .app-container {
-  position: absolute;
-  inset: 0;
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -89,10 +94,8 @@
 
 /* HEADER */
 .header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  flex-shrink: 0;
   height: 60px;
   width: 100%;
   background: transparent;
@@ -200,10 +203,8 @@
 
 /* ANNOUNCEMENT */
 .announce {
-  position: absolute;
-  top: 60px;
-  left: 0;
-  right: 0;
+  position: relative; 
+  flex-shrink: 0;
   width: 100%;
   background: linear-gradient(90deg, #fff7db, #ffe8b3);
   padding: 5px 10px;
@@ -225,6 +226,16 @@
 .announce b {
   font-size: 12px;
   color: #92400e;
+}
+
+/* CHAT CONTAINER - Flexbox handles the remaining height */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
 }
 
 /* PINNED MESSAGE HEADER */
@@ -249,6 +260,18 @@
 }
 .pinned-header.hidden {
   display: none !important;
+}
+
+/* CHAT HISTORY AREA */
+.chat {
+  flex: 1;
+  padding: 10px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent; 
+  min-height: 0; /* Important for flex-child scrolling */
 }
 
 /* TELEGRAM LINK PREVIEW STYLES */
@@ -540,29 +563,6 @@
   transform: translateY(0);
 }
 
-/* CHAT AREA */
-.chat-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  padding-top: 95px; /* Safely clears Header & Announce */
-  padding-bottom: 0px;
-}
-
-.chat {
-  flex: 1;
-  padding: 0px 12px;
-  padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); /* Safely clears the Input Bar */
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  background: transparent; 
-}
-
 .chat-date {
   text-align: center;
   color: White;
@@ -709,10 +709,10 @@
 
 /* INPUT AREA CONTAINER */
 .input-area-container {
-  position: absolute;
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  left: 8px;
-  right: 8px;
+  position: relative; /* Natural stacking at the bottom of the flex container */
+  flex-shrink: 0;
+  margin: 8px;
+  margin-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); /* Safe area support for iOS */
   height: 50px;
   background:rgba(5,15,25,1);
   border: 1px solid rgba(255,255,255,0.1);
@@ -796,7 +796,7 @@
 /* IMAGE PREVIEW */
 .image-preview-container {
   position: absolute;
-  bottom: calc(65px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(70px + env(safe-area-inset-bottom, 0px)); /* Sits consistently above input area */
   left: 10px;
   right: 10px;
   z-index: 40;
