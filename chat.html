@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Kimi Support</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 
 <!-- FONT AWESOME -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -26,7 +26,6 @@
   --warning: #f59e0b;
   --info: #3b82f6;
 }
-
     /* Disable text selection */
     * {
         -webkit-user-select: none;
@@ -34,10 +33,6 @@
         -ms-user-select: none;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     }
 
     /* Disable drag of images and links */
@@ -55,50 +50,38 @@
         pointer-events: none;
     }
 
-    /* Lock html height */
-    html {
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    /* ULTIMATE FIX: Locks body to actual visible window, ignoring address bar scroll issues */
+    /* Prevent right-click via pointer-events */
     body {
         cursor: default;
-        position: fixed; 
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
-        background-blend-mode: overlay;
-        background-size: 100% 100%;
-        color: var(--text);
-        backdrop-filter: brightness(0.5);
     }
 
-/* MAIN APP CONTAINER */
-.app-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, rgba(125,44,155,0.99), rgba(128,11,155,0.99)), url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiIdgLmOey-Wazo6OgYRZ84ytYF0kFvOpSs-5IeXzAkR8-A_YCd8t7krTINX-j00riNttDSkk1ZW_iem-FiTF7HotxoM1vGPREO4P33FLnYEC6a7zCf6FCW98wyGkHJvXRMgGMcO_dZgg0ieu18RQYPxkCNDaKoLcPUDQdXIAuXXqnQlMt_qN9WjAG7zlA/s16000/1000110623.png');
+        background-blend-mode: overlay;
+        background-size: 100% 100%;
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  backdrop-filter: brightness(0.5);
 }
 
 /* HEADER */
 .header {
-  position: relative;
-  flex-shrink: 0;
+  position:fixed;
+  top:0;
+  left:0;
   height: 60px;
-  width: 100%;
-  background: transparent;
+  width:100vw;
+  background:transparent;
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -129,6 +112,7 @@
     height:40px;
     border-radius: 50px;
     align-items: center;
+    align-items: center;
     align-self: center;
     margin:auto;
     padding-right: 20px;
@@ -152,11 +136,12 @@
   gap: 10px;
   background:#2B3856;
   padding:3px;
-  height:40px;
-  border-radius: 50px;
-  align-items: center;
-  align-self: center;
-  border:1px solid rgba(255,255,255,0.1);
+    height:40px;
+    border-radius: 50px;
+    align-items: center;
+    align-items: center;
+    align-self: center;
+    border:1px solid rgba(255,255,255,0.1);
 }
 
 .icon-btn {
@@ -203,9 +188,10 @@
 
 /* ANNOUNCEMENT */
 .announce {
-  position: relative; 
-  flex-shrink: 0;
-  width: 100%;
+    position:fixed;
+    top:60px;
+    left:0;
+    width:100vw;
   background: linear-gradient(90deg, #fff7db, #ffe8b3);
   padding: 5px 10px;
   display: flex;
@@ -215,7 +201,7 @@
   animation: slideDown 0.3s ease-out;
   border-radius: 2px;
   z-index: 110;
-  overflow: hidden; 
+  overflow: hidden; /* Added to keep marquee neat */
 }
 
 .announce i {
@@ -226,16 +212,6 @@
 .announce b {
   font-size: 12px;
   color: #92400e;
-}
-
-/* CHAT CONTAINER - Flexbox handles the remaining height */
-.chat-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  width: 100%;
-  position: relative;
 }
 
 /* PINNED MESSAGE HEADER */
@@ -252,26 +228,14 @@
   flex-shrink: 0;
   backdrop-filter: blur(5px);
   z-index: 10;
-  cursor: pointer; 
-  transition: transform 0.2s ease, background 0.2s ease; 
+  cursor: pointer; /* Added */
+  transition: transform 0.2s ease, background 0.2s ease; /* Added */
 }
 .pinned-header:active {
-  transform: scale(0.98); 
+  transform: scale(0.98); /* Added */
 }
 .pinned-header.hidden {
   display: none !important;
-}
-
-/* CHAT HISTORY AREA */
-.chat {
-  flex: 1;
-  padding: 10px 12px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  background: transparent; 
-  min-height: 0; /* Important for flex-child scrolling */
 }
 
 /* TELEGRAM LINK PREVIEW STYLES */
@@ -377,7 +341,7 @@
   transform: translateY(100%);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-  max-height: 85dvh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -563,6 +527,30 @@
   transform: translateY(0);
 }
 
+/* CHAT AREA */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 50vh;
+  max-height: 100vh;
+  width:100vw;
+  padding-top:100px;
+  padding-bottom: 0px;
+}
+
+.chat {
+  flex: 1;
+  padding: 0px 12px 16px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent; 
+  padding-bottom: 70px;
+}
+
 .chat-date {
   text-align: center;
   color: White;
@@ -589,7 +577,7 @@
 }
 
 .message.user {
-  background: linear-gradient(180deg, #357EC7, #6698FF);
+  background: linear-gradient(0deg, #357EC7, #6698FF);
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 3px;
@@ -709,10 +697,11 @@
 
 /* INPUT AREA CONTAINER */
 .input-area-container {
-  position: relative; /* Natural stacking at the bottom of the flex container */
-  flex-shrink: 0;
-  margin: 8px;
-  margin-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); /* Safe area support for iOS */
+  position: fixed;
+  bottom:0;
+  left: 0;
+  right: 0;
+  width:auto;
   height: 50px;
   background:rgba(5,15,25,1);
   border: 1px solid rgba(255,255,255,0.1);
@@ -720,6 +709,7 @@
   display: flex;
   align-items: center;
   padding: 0 5px;
+  margin:8px;
   gap: 8px;
   z-index: 50;
 }
@@ -774,7 +764,7 @@
   transform: scale(0.9);
 }
 .addphoto{
-  background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgcGDe7afwg0UcfmeFVqtDhzeAhvFYXhnqEopTE085y4zKHNewmW9BTa4gqpQQ5HjcM9Bt0h5VdJQ0ZEa7X8Toy-kbub61P8LiaPZP9_ZVhAhf56HYRAQq4XXgpwb4A2I9ralOpa6r3uMhfkP3lyNnE2Oh8ZN-VCnQadP9q6nHZ7CkQtVQs1bCFPgtyOfg/s16000/1000111625.png");
+    background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgcGDe7afwg0UcfmeFVqtDhzeAhvFYXhnqEopTE085y4zKHNewmW9BTa4gqpQQ5HjcM9Bt0h5VdJQ0ZEa7X8Toy-kbub61P8LiaPZP9_ZVhAhf56HYRAQq4XXgpwb4A2I9ralOpa6r3uMhfkP3lyNnE2Oh8ZN-VCnQadP9q6nHZ7CkQtVQs1bCFPgtyOfg/s16000/1000111625.png");
   background-size: 100% 100%;
   color: white;
 }
@@ -795,8 +785,8 @@
 
 /* IMAGE PREVIEW */
 .image-preview-container {
-  position: absolute;
-  bottom: calc(70px + env(safe-area-inset-bottom, 0px)); /* Sits consistently above input area */
+  position: fixed;
+  bottom: 50px;
   left: 10px;
   right: 10px;
   z-index: 40;
@@ -840,7 +830,10 @@
 /* FULL SCREEN IMAGE MODAL */
 .fullscreen-modal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.95);
   z-index: 1002;
   display: flex;
@@ -1394,7 +1387,7 @@ function updateAnnouncementBar() {
   if (!isAdminConnected) {
     announceBar.innerHTML = `
       <i class="fas fa-volume-up"></i>
-      <b style="font-size: 12px;"><span style="color: #ff6600;">Sorry , We are away at the Moment</span> . Please Describe Your Issue We Will Catch You soon..</b>
+      <b style="font-size: 13px;"><span style="color: #ff6600;">Sorry , We are away at the Moment</span> . Please Describe Your Issue We Will Catch You soon..</b>
     `;
   } else {
     if (!hasSentMessage) {
@@ -1405,8 +1398,8 @@ function updateAnnouncementBar() {
     } else {
       announceBar.innerHTML = `
         <i class="fas fa-volume-up"></i>
-        <marquee style="flex: 1; min-width: 0; font-size: 12px; color: #92400e; font-weight: bold; display: flex; align-items: center;" scrollamount="4">
-           &nbsp;|&nbsp; Always Submit 12digit UTR codes For All Deposits  &nbsp;|&nbsp;  It May Take Upto 3-7 Days For The Bank To Process Deposits and Withdrawls &nbsp;|&nbsp; Get Guranteed Rewards On Each Referrals &nbsp;|&nbsp; Invest Your Funds And Grow More With Kimi &nbsp;|&nbsp; Never Disclose Your Login Password With Anyone! &nbsp;|&nbsp; 💡 Tip:Never Disclose Your Account Details With Anyone Keep your account details safe!
+        <marquee style="flex: 1; min-width: 0; font-size: 14px; color: #92400e; font-weight: bold; display: flex; align-items: center;" scrollamount="4">
+           &nbsp;|&nbsp; Deposit Are Usually Credited Within Minutes  &nbsp;|&nbsp;  Withdrawals are Processed within 24 hours &nbsp;|&nbsp;  Referral Program: Earn rewards for inviting friends! &nbsp;|&nbsp; 📈 Investments: Check our active plans and ROI &nbsp;|&nbsp; 🔐 Signup/in: Need help? Rest your password below &nbsp;|&nbsp; 💡 Tip: Keep your account details safe!
         </marquee>
       `;
     }
