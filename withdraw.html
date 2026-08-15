@@ -1027,6 +1027,10 @@ background-image: radial-gradient(
   // App Ready Flags
   let isAppReady = false;
   let isInitialLoadDone = false;
+
+  // Track constraints globally
+  let hasPendingWithdrawal = false;
+  let lastBankUpdate = null;
   
   // NEW: VIP logic Variables
   const VIP_LEVELS = [
@@ -1144,8 +1148,16 @@ background-image: radial-gradient(
         database.ref(`appusers/${uid}/withdrawalHistory`).once('value', wSnap => {
             todayOrdersCount = 0;
             todayWithdrawalAmount = 0;
+            hasPendingWithdrawal = false;
+            
             wSnap.forEach(child => {
                 let val = child.val();
+                
+                // NEW: Check if there's any active pending/processing withdrawals
+                if (val.status === 'pending' || val.status === 'processing') {
+                    hasPendingWithdrawal = true;
+                }
+                
                 if (val.timestamp >= todayStart.getTime() && val.status !== 'failed') {
                     todayOrdersCount++;
                     todayWithdrawalAmount += Number(val.amount) || 0;
@@ -1217,6 +1229,7 @@ background-image: radial-gradient(
       if (userData) {
         let totalBalance = userData.totalBalance || 0;
         let withdrawableBalance = userData.withdrawableBalance || 0;
+        lastBankUpdate = userData.lastBankUpdate || null;
 
         document.getElementById('totalBalance').textContent = `₹${totalBalance.toFixed(2)}`;
         document.getElementById('withdrawableBalance').textContent = `₹${withdrawableBalance.toFixed(2)}`;
@@ -1289,6 +1302,19 @@ background-image: radial-gradient(
     const uid = localStorage.getItem('uid');
     const updateMethod = document.querySelector('#updateMethodTabs .method-tab.active').getAttribute('data-method');
     
+    // NEW: Check if updated this calendar month (IST)
+    const istTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    const currentMonthKey = istTime.getFullYear() + "-" + (istTime.getMonth() + 1).toString().padStart(2, '0');
+
+    if (lastBankUpdate === currentMonthKey) {
+        showMessagePopup("You can only update your account details once per calendar month.");
+        playSound('errorSound');
+        return;
+    }
+
+    const updates = {};
+    updates['lastBankUpdate'] = currentMonthKey;
+
     if (updateMethod === 'imps') {
       const bankDetails = {
         accountNumber: document.getElementById('updateAccountNumber').value.trim(),
@@ -1304,13 +1330,9 @@ background-image: radial-gradient(
       if (!bankDetails.ifscCode.match(/^[A-Z]{4}0[A-Z0-9]{6}$/)) {
         showMessagePopup('Invalid IFSC code format!'); playSound('errorSound'); return;
       }
+      
+      updates['BankDetails'] = bankDetails;
 
-      database.ref('appusers/' + uid + '/BankDetails').set(bankDetails)
-        .then(() => {
-          showSuccessPopup('Bank details updated successfully!');
-          playSound('successSound'); loadUserData(); setTimeout(hideBankUpdateModal, 1500);
-        })
-        .catch(error => { showMessagePopup('Failed to update bank details. Please try again.'); playSound('errorSound'); });
     } else {
       const upiDetails = {
         upiId: document.getElementById('updateUpiId').value.trim(),
@@ -1322,19 +1344,30 @@ background-image: radial-gradient(
       if (!upiDetails.upiId.match(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)) {
         showMessagePopup('Invalid UPI ID format! Please use format: user@upi'); playSound('errorSound'); return;
       }
-
-      database.ref('appusers/' + uid + '/UPIDetails').set(upiDetails)
-        .then(() => {
-          showSuccessPopup('UPI details updated successfully!');
-          playSound('successSound'); loadUserData(); setTimeout(hideBankUpdateModal, 1500);
-        })
-        .catch(error => { showMessagePopup('Failed to update UPI details. Please try again.'); playSound('errorSound'); });
+      
+      updates['UPIDetails'] = upiDetails;
     }
+
+    // Set atomic update for details + last update month tracker
+    database.ref('appusers/' + uid).update(updates)
+      .then(() => {
+        lastBankUpdate = currentMonthKey;
+        showSuccessPopup(updateMethod === 'imps' ? 'Bank details updated successfully!' : 'UPI details updated successfully!');
+        playSound('successSound'); loadUserData(); setTimeout(hideBankUpdateModal, 1500);
+      })
+      .catch(error => { showMessagePopup('Failed to update details. Please try again.'); playSound('errorSound'); });
   }
 
   // Process Withdrawal enforcing VIP maxOrders and maxAmount using secure transaction
   function processWithdrawal() {
     if (!checkAuth()) return;
+    
+    // NEW: Enforce rule where user cannot submit withdrawal if another is processing
+    if (hasPendingWithdrawal) {
+        showMessagePopup("You already have a pending or processing withdrawal. Please wait for it to complete.");
+        playSound('errorSound');
+        return;
+    }
 
     if (currentUserVip.level === 0 || currentUserVip.maxOrders === 0) {
         showMessagePopup("You are a Non-VIP User. Please deposit at least ₹100 to upgrade to VIP and place withdrawal orders.");
@@ -1447,6 +1480,14 @@ background-image: radial-gradient(
 
   function initiateWithdrawal() {
     if (!isAppReady) return;
+    
+    // NEW: Enforce rule where user cannot submit withdrawal if another is processing
+    if (hasPendingWithdrawal) {
+        showMessagePopup("You already have a pending or processing withdrawal. Please wait for it to complete.");
+        playSound('errorSound');
+        return;
+    }
+    
     if (currentUserVip.level === 0 || currentUserVip.maxOrders === 0) {
         showMessagePopup("Only For VIP 1 Or Above Users");
         playSound('errorSound');
