@@ -1424,6 +1424,11 @@ background-image: radial-gradient(
       if (userData) {
         let total = userData.totalBalance || 0;
         let withdrawable = userData.withdrawableBalance || 0;
+        
+        // NEW WAGERING CHECK SECURE
+        if (total > withdrawable) {
+          return undefined; // abort transaction
+        }
 
         if (totalAmount > withdrawable) {
           return undefined; // abort transaction
@@ -1440,7 +1445,7 @@ background-image: radial-gradient(
       return userData;
     }, (error, committed, snapshot) => {
       if (error || !committed) {
-        showMessagePopup(`Insufficient withdrawable balance or error!`);
+        showMessagePopup(`Error: Unwithdrawable balance exists or insufficient funds!`);
         playSound('errorSound'); 
       } else {
         let methodText = currentMethod === 'imps' ? 'Bank (IMPS)' : 'UPI';
@@ -1480,6 +1485,18 @@ background-image: radial-gradient(
 
   function initiateWithdrawal() {
     if (!isAppReady) return;
+    
+    // NEW WAGERING CHECK: Block if ANY unwithdrawable balance exists
+    const tbText = document.getElementById('totalBalance').textContent.replace(/[^0-9.]/g, '');
+    const wbText = document.getElementById('withdrawableBalance').textContent.replace(/[^0-9.]/g, '');
+    const currentTb = parseFloat(tbText) || 0;
+    const currentWb = parseFloat(wbText) || 0;
+
+    if (currentTb > currentWb) {
+        showMessagePopup("You have unwithdrawable balance on your account. You must wager your balance to make it 100% withdrawable before submitting a request!");
+        playSound('errorSound');
+        return;
+    }
     
     // NEW: Enforce rule where user cannot submit withdrawal if another is processing
     if (hasPendingWithdrawal) {
